@@ -95,7 +95,7 @@ git log
 
 ![Пример git log](gitlog.png)
 
-Для данной команды рекомендуется ещё рассотреть применениеи ключей `--oneline` `--graph` `--stat`
+Для данной команды рекомендуется ещё рассмотреть применениеи ключей `--oneline` `--graph` `--stat`
 Первый ключ выводит инфу в сжатом формате, второй ключ визуализирует всю историю коммитов в виде графа, третий показывает статистику по коммиту: сколько было удалено или добавлено строк.  
 ![Пример git log с ключами](gitlog2.png)
 
@@ -141,7 +141,34 @@ git add .
  ```powershell
 git commit --amend
 ```
+
 Так же можно ввести предыдущую команду с ключом `-m` и указать новый комментарий.
+
+## Как измнить коммит в середине
+
+Выбираем старый коммит, до того, который нужно поменить и применяем
+
+```powershell
+git rebase -i <commit>
+```
+
+Затем добавляем файлы
+
+```poweshell
+git add <file>
+```
+
+Затем коммитим
+
+```powershell
+git commit --amend
+```
+
+После успешного коммита, выполняем:
+
+```powershell
+ git rebase --continue
+ ```
 
 ## Создание ветвей
 
@@ -220,7 +247,7 @@ git pull <CloudName>
 Для передачи в удалённый репозиторий своих изменений используется команда:
 
 ```powershell
-git pull <ClounName> <yourBranchName>
+git push <ClounName> <yourBranchName>
 ```
 
 Если на удаленной ветке есть коммиты, которые были сделаны позже наших, то есть слияние выполнить неполучится, хотя можно использовать ключ `--force`.  **НО ЭТО ПОТРЁТ ЧУЖИЕ КОММИТЫ**. Вместо этого лучше `git push` использовать, а потом уже `git pull`.
@@ -248,6 +275,34 @@ Password for 'https://yourname@github.com': ********
 
 Сначала создаётся форк - точная копия чужого репозитория в моём аккаунте, туда я делаю пулл, а потом предлагаю авторам оригинала слить наши ветки в одну.
 
+## .gitingnore
 
-# TODO Добавить про то как изменить старый коммит.
-edit old commit
+Добавляем в такой фал маски игнорируемых git add . файлов.
+
+Пример:
+
+```text
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Unity3D generated file on crash reports
+sysinfo.txt
+
+# Builds
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# Crashlytics generated file
+crashlytics-build.properties
+
+# Packed Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Temporary auto-generated Android Assets
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+```
