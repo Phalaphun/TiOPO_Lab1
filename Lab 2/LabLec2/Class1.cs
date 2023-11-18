@@ -245,7 +245,7 @@ namespace LabLec2
             foreach (var a in coef)
                 SystemState += "Коэффициент:" +a.ToString();
 
-            SaveLogTxt(this); SaveLogXML(this);
+            SaveLogTxt(this); SaveLogXML(this); SaveLogJSON(this);
         }
 
         public double[] Coef { get => coef; set => coef = value; }
@@ -260,9 +260,20 @@ namespace LabLec2
         {
             foreach (var a in coef)
                 SystemState += "Коэффициент:" + a.ToString();
-            SaveLogTxt(this); SaveLogXML(this);
+            SaveLogTxt(this); SaveLogXML(this); SaveLogJSON(this);
         }
 
         public double[] Coef { get => coef; set => coef = value; }
+    }
+
+    internal class MyFileNotFoundException : MyException
+    {
+
+        public MyFileNotFoundException(string message)
+        : base(message) 
+        {
+            SaveLogTxt(this); SaveLogXML(this); SaveLogJSON(this);
+        }
+
     }
 }

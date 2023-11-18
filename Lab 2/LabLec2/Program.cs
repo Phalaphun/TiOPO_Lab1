@@ -32,21 +32,21 @@ namespace LabLec1
             //string path = Console.ReadLine() ?? throw new FileNotFoundException("Указан некорректный путь");
             string? path = Console.ReadLine();
 #elif test
-            string path = "prim1.txt";
+            string path = "prim.txt";
 #endif
 
             try
             {
                 if (!File.Exists(path))
                 {
-                    FileNotFoundException exception = new FileNotFoundException($"Файла {path} нет. Завершаю работу");
+                    MyFileNotFoundException exception = new MyFileNotFoundException($"Файла {path} нет. Завершаю работу");
 
                     throw exception; //Если убрать if то там выбросится все таки другое исключение
                 }
             }
-            catch (FileNotFoundException e)
+            catch (MyFileNotFoundException e)
             {
-                Serialize(e);
+                //Serialize(e);
                 Console.WriteLine(e.Message);
                 return;
             }
@@ -126,7 +126,7 @@ namespace LabLec1
                     Console.WriteLine(ans[1]);
                 }
                 sr.Close();
-                SerializeExList(exList);
+                //SerializeExList(exList);
             }
 
 
