@@ -118,7 +118,7 @@ namespace LabLec2
 
                 //sw.Close();
 
-                sw.WriteLine($"{DateTime.UtcNow}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}..|Значение системных параметров:..|{systemState}");
+                sw.WriteLine($"{ex.Date.ToString()}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}..|Значение системных параметров:..|{systemState}");
                 
                 //sw.WriteLine("Ошибка");
                 //sw.WriteLine(Console.Title);
@@ -156,8 +156,12 @@ namespace LabLec2
 
                 dox.Add(start);
 
-                dox.Save(path);
-                
+                using (StreamWriter sw = new StreamWriter(path))
+                {
+                    dox.Save(sw);
+                    sw.Close();
+                };
+
             }
             else
             {
@@ -172,7 +176,11 @@ namespace LabLec2
 
                 dox.Element("MyExceptions").Add(exception);
 
-                dox.Save(path);
+                using (StreamWriter sw = new StreamWriter(path))
+                {
+                    dox.Save(sw);
+                    sw.Close();
+                };
 
 
             }

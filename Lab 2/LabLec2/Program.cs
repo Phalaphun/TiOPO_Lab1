@@ -34,7 +34,7 @@ namespace LabLec1
             //string path = Console.ReadLine() ?? throw new FileNotFoundException("Указан некорректный путь");
             string? path = Console.ReadLine();
 #elif test
-            string path = "prim.txt";
+            string path = "prim1.txt";
 #endif
 
             try
@@ -176,7 +176,7 @@ namespace LabLec1
                     XElement start = new XElement("MyExceptions");
 
                     XElement exception = new XElement("FileNotFoundException");
-                    exception.Add(new XElement("date", DateTime.Now.ToString()));
+                    exception.Add(new XElement("date", DateTime.UtcNow.ToString()));
                     exception.Add(new XElement("name", Console.Title));
                     exception.Add(new XElement("message", ex.Message));
                     exception.Add(new XElement("stacktrace", ex.StackTrace));
@@ -186,14 +186,18 @@ namespace LabLec1
 
                     dox.Add(start);
 
-                    dox.Save(path + ".xml");
+                    using (StreamWriter sw = new StreamWriter(path + ".xml"))
+                    {
+                        dox.Save(sw);
+                        sw.Close();
+                    };
                 }
                 else
                 {
                     XDocument dox = XDocument.Load(path + ".xml");
 
                     XElement exception = new XElement("FileNotFoundException");
-                    exception.Add(new XElement("date", DateTime.Now.ToString()));
+                    exception.Add(new XElement("date", DateTime.UtcNow.ToString()));
                     exception.Add(new XElement("name", Console.Title));
                     exception.Add(new XElement("message", ex.Message));
                     exception.Add(new XElement("stacktrace", ex.StackTrace));
@@ -202,7 +206,11 @@ namespace LabLec1
 
                     dox.Element("MyExceptions").Add(exception);
 
-                    dox.Save(path + ".xml");
+                    using (StreamWriter sw = new StreamWriter(path + ".xml"))
+                    {
+                        dox.Save(sw);
+                        sw.Close();
+                    };
 
 
                 }
