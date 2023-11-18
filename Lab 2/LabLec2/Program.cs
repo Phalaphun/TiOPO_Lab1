@@ -1,38 +1,30 @@
-﻿//#define test
+﻿#define test
+using LabLec2;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-
+using System.Reflection;
 
 namespace LabLec1
 {
-
-    internal class NumberException : Exception
-    {
-        public NumberException(string message)
-        : base(message) { }
-    }
-    internal class DiscMinException : Exception
-    {
-        public DiscMinException(string message)
-        : base(message) { }
-    }
-    internal class DiscZeroException : Exception
-    {
-        public DiscZeroException(string message)
-        : base(message) { }
-    }
+ 
     internal class Program
     {
+        
         static void Main()
         {
-        
+            List<Exception> exList = new List<Exception>();
+
+            Console.Title="Бульбулятор";
             Console.WriteLine("Программа для решения квадратных уравнений с двумя корнями");
             Console.WriteLine("Коэффициенты следует указать в файле *.txt. В каждой строке указать только число - коэффициент");
             Console.WriteLine("Введите путь до файла с коэффициентам." +
                 " Если файл лежит в каталоге с программой,\nукажите только название и расширение файла");
 
 #if !test
-            //string path = Console.ReadLine() ?? throw new FileNotFoundException("Указан пустой путь");
+            //string path = Console.ReadLine() ?? throw new FileNotFoundException("Указан некорректный путь");
             string? path = Console.ReadLine();
 #elif test
             string path = "prim.txt";
@@ -42,43 +34,47 @@ namespace LabLec1
             {
                 if (!File.Exists(path))
                 {
-                    throw new FileNotFoundException("Такого файла нет. Завершаю работу"); //Если убрать if то там выбросится все таки другое исключение
+                    FileNotFoundException exception = new FileNotFoundException($"Файла {path} нет. Завершаю работу");
 
+                    throw exception; //Если убрать if то там выбросится все таки другое исключение
                 }
             }
             catch (FileNotFoundException e)
             {
+                Serialize(e);
                 Console.WriteLine(e.Message);
                 return;
             }
             StreamReader sr = new StreamReader(path);
             double[] ans = new double[2];
-            bool doOut=false;
+            bool doOut = false;
+            double[] coef = new double[3];
 
             try
             {
-                
 
-                double[] coef = new double[3];
+
+                
                 int i = 0;
-                while (!sr.EndOfStream )
+                while (!sr.EndOfStream)
                 {
-                    if( i == 3 )
+                    if (i == 3)
                     {
                         break;
                     }
                     string? A = sr.ReadLine();
                     if (!double.TryParse(A, out coef[i]))
                     {
-                        throw new NumberException($" Коэффициент {A} не был распознан как число");
+                        throw new NumberException($" Коэффициент {A} не был распознан как число", A);
+                        
                     }
                     i++;
                 }
                 Console.WriteLine($"\n\n\nВаше уравнение: {coef[0]}x^2+{coef[1]}x+{coef[2]}");
-                double disc = Math.Pow(coef[1],2) - 4*coef[0]*coef[2];
+                double disc = Math.Pow(coef[1], 2) - 4 * coef[0] * coef[2];
                 if (disc < 0)
                 {
-                    throw new DiscMinException($" Дискриминант оказался меньше нуля: {disc}");
+                    throw new DiscMinException($" Дискриминант оказался меньше нуля: {disc}", coef);
                 }
 
                 ans[0] = (-coef[1] + Math.Sqrt(disc)) / (2 * coef[1]);
@@ -86,28 +82,27 @@ namespace LabLec1
 
                 if (Math.Abs(disc - 0) < 0.0000001)
                 {
-                    throw new DiscZeroException($"Дискриминант оказался равен 0");
+                    throw new DiscZeroException($"Дискриминант оказался равен 0", coef);
                 }
-                
-                //Console.WriteLine("Ответы: ");
-                //Console.WriteLine(ans[0]);
-                //Console.WriteLine(ans[1]);
+
 
 
             }
-            
-            catch(NumberException nb)
+
+            catch (NumberException nb)
             {
                 Console.WriteLine(nb.Message);
+                doOut = true;
             }
-            catch(DiscZeroException ex)
+            catch (DiscZeroException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine("Ответ: "+ans[0]);
+                Console.WriteLine("Ответ: " + ans[0]);
                 doOut = true;
                 
+
             }
-            catch(DiscMinException ex)
+            catch (DiscMinException ex)
             {
                 Console.WriteLine(ex.Message);
                 doOut = true;
@@ -126,14 +121,55 @@ namespace LabLec1
                     Console.WriteLine(ans[1]);
                 }
                 sr.Close();
+                SerializeExList(exList);
             }
 
 
-            
 
-            
+
+
         }
+
+        private static void SerializeExList(List<Exception> exList)
+        {
+            if (exList.Count != 0)
+            {
+                foreach (var item in exList)
+                {
+                    Serialize(item);
+
+                }
+            }
+        }
+
+        private static void Serialize(Exception ex, string path = "log.txt")
+        {
+            using (StreamWriter sw = new StreamWriter(path, true))
+            {
+
+                sw.WriteLine($"{DateTime.UtcNow}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
+                sw.Close();
+            }
+        }
+
+
+
+        // Что произошло
+        // Когда произошло
+        // Имя приложения
+        // Trace log
+        // Внутренние параметры
+        // Реализуем интерфейс ILogSealed - будет 1 метод - SaveLog (Принимает тип ошибки). Пишем две реализации интерфейса - savelogtext savelog xml + куда сохранять нужно продумать.
+        // Файл может быть занят, предусмотреть это в отдельном потоке. 
+        // Событие перед крашем системы - поискать про эту штуку. 
+        // 
+
+
+        // По факту возникновения любой ошибки реализовать логирование xml json txt 
+        
     }
+
+   
 }
 
 /*
