@@ -1,5 +1,7 @@
 ﻿#define test
 using LabLec2;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,14 +41,14 @@ namespace LabLec1
             {
                 if (!File.Exists(path))
                 {
-                    MyFileNotFoundException exception = new MyFileNotFoundException($"Файла {path} нет. Завершаю работу");
+                    FileNotFoundException exception = new FileNotFoundException($"Файла {path} нет. Завершаю работу");
 
                     throw exception; //Если убрать if то там выбросится все таки другое исключение
                 }
             }
-            catch (MyFileNotFoundException e)
+            catch (FileNotFoundException e)
             {
-                //Serialize(e);
+                Serialize(e);
                 Console.WriteLine(e.Message);
                 return;
             }
@@ -126,7 +128,7 @@ namespace LabLec1
                     Console.WriteLine(ans[1]);
                 }
                 sr.Close();
-                //SerializeExList(exList);
+                SerializeExList(exList);
             }
 
 
@@ -153,7 +155,7 @@ namespace LabLec1
         {
             ToTXT();
             ToXML();
-            //ToJson();
+            ToJson();
 
 
             void ToTXT()
@@ -209,43 +211,53 @@ namespace LabLec1
             {
                 if (File.Exists(path+".json"))
                 {
-                    string json = "";
-                    using (StreamReader sr = new StreamReader(path+".json"))
+                    JArray array;
+                    using (StreamReader sr = new StreamReader(path + ".json"))
+                    using (JsonTextReader reader = new JsonTextReader(sr))
                     {
-                        json = sr.ReadLine();
-                    }
-                    List<Exception> list = JsonSerializer.Deserialize<List<Exception>>(json);
-                    list.Add(ex);
 
-                    using (FileStream fs = new FileStream(path+".json", FileMode.OpenOrCreate))
+                        array = (JArray)JToken.ReadFrom(reader);
+                    }
+
+
+                    JObject exceptionJson = new JObject(
+                        new JProperty("date", DateTime.UtcNow.ToString()),
+                        new JProperty("name", ex.Source),
+                        new JProperty("message", ex.Message),
+                        new JProperty("stacktrace", ex.StackTrace)
+
+
+                        );
+                    array.Add(exceptionJson);
+                    string json = array.ToString(Formatting.Indented);
+                    using (StreamWriter sw = new StreamWriter(path + ".json"))
                     {
-                        JsonSerializerOptions options = new JsonSerializerOptions()
-                        {
-                            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
-                                                                                   //WriteIndented = true,
-                        };
-
-
-
-                        JsonSerializer.Serialize<List<Exception>>(fs, list, options);
-                        Console.WriteLine("Data has been saved to file");
+                        sw.WriteLine(json);
+                        sw.Close();
                     }
+
                 }
                 else
                 {
-                    using (FileStream fs = new FileStream(path+".json", FileMode.OpenOrCreate))
+                    JArray array = new JArray();
+
+                    JObject exceptionJson = new JObject(
+                        new JProperty("date", DateTime.UtcNow.ToString()),
+                        new JProperty("name", ex.Source),
+                        new JProperty("message", ex.Message),
+                        new JProperty("stacktrace", ex.StackTrace)
+
+
+                        );
+                    array.Add(exceptionJson);
+
+                    string json = array.ToString();
+                    using (StreamWriter sw = new StreamWriter(path + ".json"))
                     {
-                        JsonSerializerOptions options = new JsonSerializerOptions()
-                        {
-                            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
-                                                                                   //WriteIndented = true,
-                        };
-
-                        List<Exception> list = new List<Exception> { ex };
-
-                        JsonSerializer.Serialize<List<Exception>>(fs, list, options);
-                        Console.WriteLine("Data has been saved to file");
+                        sw.WriteLine(json);
+                        sw.Close();
                     }
+
                 }
             }
         }

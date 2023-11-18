@@ -4,10 +4,11 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Xml.Linq;
 
-
+using Newtonsoft.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using Newtonsoft.Json.Linq;
 
 namespace LabLec2
 
@@ -35,108 +36,65 @@ namespace LabLec2
         public string Mymessage { get => mymessage; set => mymessage = value; }
 
 
-        //public MyException(SerializationInfo info, StreamingContext context) :base (info.GetString("_message"))
-        //{
-        //    if(info!=null)
-        //    {
-        //        this.systemState = info.GetString("systemState");
-        //        this.date = info.GetDateTime("date");
-        //    }
-        //}
-
         public MyException() { }
 
         public void SaveLogJSON(MyException ex, string path = "log.json")
         {
-            //using (FileStream fs = new FileStream(path, FileMode.Append))
-            //{
-            //    JsonSerializerOptions options = new JsonSerializerOptions()
-            //    {
-            //        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
-            //        WriteIndented = true,
-            //    };
-
-
-            //    JsonSerializer.Serialize<MyException>(fs, this, options);
-            //    Console.WriteLine("Data has been saved to file");
-            //}
-
-
+            
             if (File.Exists(path))
             {
-                string json = "";
-                using (StreamReader sr = new StreamReader(path))
+                JArray array;
+                using(StreamReader sr = new StreamReader(path))
+                using (JsonTextReader reader = new JsonTextReader(sr))
                 {
-                    json = sr.ReadLine();
-                }
-                List<MyException> list = JsonSerializer.Deserialize<List<MyException>>(json);
-                list.Add(ex);
 
-                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                    array = (JArray)JToken.ReadFrom(reader);
+                }
+
+
+                JObject exceptionJson = new JObject(
+                    new JProperty("date", ex.Date.ToString()),
+                    new JProperty("name", ex.Source),
+                    new JProperty("message", ex.Message),
+                    new JProperty("stacktrace", ex.StackTrace),
+                    new JProperty("systemState", ex.SystemState)
+
+
+                    );
+                array.Add(exceptionJson);
+                string json = array.ToString(Formatting.Indented);
+                using (StreamWriter sw = new StreamWriter(path))
                 {
-                    JsonSerializerOptions options = new JsonSerializerOptions()
-                    {
-                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
-                        //WriteIndented = true,
-                    };
-
-                   
-
-                    JsonSerializer.Serialize<List<MyException>>(fs, list, options);
-                    Console.WriteLine("Data has been saved to file");
+                    sw.WriteLine(json);
+                    sw.Close();
                 }
+
             }
             else
             {
-                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                JArray array = new JArray();
+
+                JObject exceptionJson = new JObject( 
+                    new JProperty("date", ex.Date.ToString()),
+                    new JProperty("name", ex.Source),
+                    new JProperty("message", ex.Message),
+                    new JProperty("stacktrace", ex.StackTrace),
+                    new JProperty("systemState", ex.SystemState)
+
+
+                    );
+                array.Add (exceptionJson);
+
+                string json = array.ToString();
+                using (StreamWriter sw = new StreamWriter(path))
                 {
-                    JsonSerializerOptions options = new JsonSerializerOptions()
-                    {
-                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
-                        //WriteIndented = true,
-                    };
-
-                    List<MyException> list = new List<MyException> { ex};
-
-                    JsonSerializer.Serialize<List<MyException>>(fs, list, options);
-                    Console.WriteLine("Data has been saved to file");
+                    sw.WriteLine(json);
+                    sw.Close();
                 }
+
             }
 
-            //if (File.Exists(path))
-            //{
-            //    string json = "";
-            //    using(StreamReader sr = new StreamReader(path))
-            //    {
-            //        json = sr.ReadLine();
-            //    }
-            //    var list = JsonConvert.DeserializeObject<List<MyException>>(json);
-            //    list.Add(ex);
-
-            //    JsonSerializer serializer = new JsonSerializer();
-            //    serializer.Converters.Add(new JavaScriptDateTimeConverter());
-            //    serializer.NullValueHandling = NullValueHandling.Include;
-                
-
-            //    using (StreamWriter sw = new StreamWriter(path))
-            //    using (JsonWriter writer = new JsonTextWriter(sw))
-            //    {
-            //        serializer.Serialize(writer, list);
-            //    }
-            //}
-            //else
-            //{
-            //    JsonSerializer serializer = new JsonSerializer();
-            //    serializer.Converters.Add(new JavaScriptDateTimeConverter());
-            //    serializer.NullValueHandling = NullValueHandling.Include;
-            //    List<MyException> list = new List<MyException> {ex };
-
-            //    using (StreamWriter sw = new StreamWriter(path))
-            //    using (JsonWriter writer = new JsonTextWriter(sw))
-            //    {
-            //        serializer.Serialize(writer, list);
-            //    }
-            //}
+            
         }
 
         public void SaveLogTxt(MyException ex, string path = "log.txt")
@@ -199,6 +157,7 @@ namespace LabLec2
                 dox.Add(start);
 
                 dox.Save(path);
+                
             }
             else
             {
