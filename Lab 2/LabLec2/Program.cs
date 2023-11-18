@@ -6,6 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
+using System.Xml.Linq;
 
 namespace LabLec1
 {
@@ -27,7 +32,7 @@ namespace LabLec1
             //string path = Console.ReadLine() ?? throw new FileNotFoundException("Указан некорректный путь");
             string? path = Console.ReadLine();
 #elif test
-            string path = "prim.txt";
+            string path = "prim1.txt";
 #endif
 
             try
@@ -139,16 +144,109 @@ namespace LabLec1
                     Serialize(item);
 
                 }
+                exList.Clear();
             }
+            
         }
 
-        private static void Serialize(Exception ex, string path = "log.txt")
+        private static void Serialize(Exception ex, string path = "log")
         {
-            using (StreamWriter sw = new StreamWriter(path, true))
-            {
+            ToTXT();
+            ToXML();
+            //ToJson();
 
-                sw.WriteLine($"{DateTime.UtcNow}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
-                sw.Close();
+
+            void ToTXT()
+            {
+                using (StreamWriter sw = new StreamWriter(path+".txt", true))
+                {
+
+                    sw.WriteLine($"{DateTime.UtcNow}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
+                    sw.Close();
+                }
+            }
+            void ToXML()
+            {
+                if (!File.Exists(path+".xml"))
+                {
+                    XDocument dox = new XDocument();
+
+                    XElement start = new XElement("MyExceptions");
+
+                    XElement exception = new XElement("FileNotFoundException");
+                    exception.Add(new XElement("date", DateTime.Now.ToString()));
+                    exception.Add(new XElement("name", Console.Title));
+                    exception.Add(new XElement("message", ex.Message));
+                    exception.Add(new XElement("stacktrace", ex.StackTrace));
+
+
+                    start.Add(exception);
+
+                    dox.Add(start);
+
+                    dox.Save(path + ".xml");
+                }
+                else
+                {
+                    XDocument dox = XDocument.Load(path + ".xml");
+
+                    XElement exception = new XElement("FileNotFoundException");
+                    exception.Add(new XElement("date", DateTime.Now.ToString()));
+                    exception.Add(new XElement("name", Console.Title));
+                    exception.Add(new XElement("message", ex.Message));
+                    exception.Add(new XElement("stacktrace", ex.StackTrace));
+
+                    //ex.Source
+
+                    dox.Element("MyExceptions").Add(exception);
+
+                    dox.Save(path + ".xml");
+
+
+                }
+            }
+            void ToJson()
+            {
+                if (File.Exists(path+".json"))
+                {
+                    string json = "";
+                    using (StreamReader sr = new StreamReader(path+".json"))
+                    {
+                        json = sr.ReadLine();
+                    }
+                    List<Exception> list = JsonSerializer.Deserialize<List<Exception>>(json);
+                    list.Add(ex);
+
+                    using (FileStream fs = new FileStream(path+".json", FileMode.OpenOrCreate))
+                    {
+                        JsonSerializerOptions options = new JsonSerializerOptions()
+                        {
+                            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
+                                                                                   //WriteIndented = true,
+                        };
+
+
+
+                        JsonSerializer.Serialize<List<Exception>>(fs, list, options);
+                        Console.WriteLine("Data has been saved to file");
+                    }
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(path+".json", FileMode.OpenOrCreate))
+                    {
+                        JsonSerializerOptions options = new JsonSerializerOptions()
+                        {
+                            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
+                                                                                   //WriteIndented = true,
+                        };
+
+                        List<Exception> list = new List<Exception> { ex };
+
+                        JsonSerializer.Serialize<List<Exception>>(fs, list, options);
+                        Console.WriteLine("Data has been saved to file");
+                    }
+                }
             }
         }
 
@@ -165,7 +263,7 @@ namespace LabLec1
         // 
 
 
-        // По факту возникновения любой ошибки реализовать логирование xml json txt 
+        // По факту возникновения любой ошибки реализовать логирование xml txt 
         
     }
 

@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Linq;
+
+
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 
 namespace LabLec2
 
@@ -15,18 +15,128 @@ namespace LabLec2
     [Serializable, XmlInclude(typeof(NumberException)), XmlInclude(typeof(DiscMinException)), XmlInclude(typeof(DiscZeroException))]
     public class MyException : Exception, ILoggable
     {
+
         private string systemState;
+        private DateTime date;
+        private string mymessage;
         public string SystemState { get => systemState; set => systemState = value; }
+        public DateTime Date { get => date; set => date = value; }
 
         public MyException(string message) : base(message)
         {
-           
+            date = DateTime.UtcNow;
+            mymessage = message;
         }
+        public override string Message 
+        {
+            get { return this.mymessage; }
+        }
+
+        public string Mymessage { get => mymessage; set => mymessage = value; }
+
+
+        //public MyException(SerializationInfo info, StreamingContext context) :base (info.GetString("_message"))
+        //{
+        //    if(info!=null)
+        //    {
+        //        this.systemState = info.GetString("systemState");
+        //        this.date = info.GetDateTime("date");
+        //    }
+        //}
+
         public MyException() { }
 
-        public void SaveLogJSON(MyException ex, string path = "log.xml")
+        public void SaveLogJSON(MyException ex, string path = "log.json")
         {
-            throw new NotImplementedException();
+            //using (FileStream fs = new FileStream(path, FileMode.Append))
+            //{
+            //    JsonSerializerOptions options = new JsonSerializerOptions()
+            //    {
+            //        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
+            //        WriteIndented = true,
+            //    };
+
+
+            //    JsonSerializer.Serialize<MyException>(fs, this, options);
+            //    Console.WriteLine("Data has been saved to file");
+            //}
+
+
+            if (File.Exists(path))
+            {
+                string json = "";
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    json = sr.ReadLine();
+                }
+                List<MyException> list = JsonSerializer.Deserialize<List<MyException>>(json);
+                list.Add(ex);
+
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    JsonSerializerOptions options = new JsonSerializerOptions()
+                    {
+                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
+                        //WriteIndented = true,
+                    };
+
+                   
+
+                    JsonSerializer.Serialize<List<MyException>>(fs, list, options);
+                    Console.WriteLine("Data has been saved to file");
+                }
+            }
+            else
+            {
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                {
+                    JsonSerializerOptions options = new JsonSerializerOptions()
+                    {
+                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // Вот эта строка Вам поможет с кодировкой
+                        //WriteIndented = true,
+                    };
+
+                    List<MyException> list = new List<MyException> { ex};
+
+                    JsonSerializer.Serialize<List<MyException>>(fs, list, options);
+                    Console.WriteLine("Data has been saved to file");
+                }
+            }
+
+            //if (File.Exists(path))
+            //{
+            //    string json = "";
+            //    using(StreamReader sr = new StreamReader(path))
+            //    {
+            //        json = sr.ReadLine();
+            //    }
+            //    var list = JsonConvert.DeserializeObject<List<MyException>>(json);
+            //    list.Add(ex);
+
+            //    JsonSerializer serializer = new JsonSerializer();
+            //    serializer.Converters.Add(new JavaScriptDateTimeConverter());
+            //    serializer.NullValueHandling = NullValueHandling.Include;
+                
+
+            //    using (StreamWriter sw = new StreamWriter(path))
+            //    using (JsonWriter writer = new JsonTextWriter(sw))
+            //    {
+            //        serializer.Serialize(writer, list);
+            //    }
+            //}
+            //else
+            //{
+            //    JsonSerializer serializer = new JsonSerializer();
+            //    serializer.Converters.Add(new JavaScriptDateTimeConverter());
+            //    serializer.NullValueHandling = NullValueHandling.Include;
+            //    List<MyException> list = new List<MyException> {ex };
+
+            //    using (StreamWriter sw = new StreamWriter(path))
+            //    using (JsonWriter writer = new JsonTextWriter(sw))
+            //    {
+            //        serializer.Serialize(writer, list);
+            //    }
+            //}
         }
 
         public void SaveLogTxt(MyException ex, string path = "log.txt")
@@ -70,67 +180,39 @@ namespace LabLec2
 
         public void SaveLogXML(MyException ex, string path = "log.xml")
         {
-            //XmlSerializer xmlSerializer = new XmlSerializer(typeof(MyException));
-            //using (FileStream fs = new FileStream("log.xml", FileMode.Append))
-            //{
-            //    xmlSerializer.Serialize(fs, ex);
 
-            //    Console.WriteLine("Object has been serialized");
-            //}
-
-            //XmlDocument xmlDocument = new XmlDocument();
-            //xmlDocument.Load(path);
-            //XmlNode rootNode = xmlDocument.CreateElement("MyException");
-            //xmlDocument.AppendChild(rootNode);
-
-            //XmlNode dateNode = xmlDocument.CreateElement("DateNode");
-            //dateNode.InnerText = DateTime.Now.ToString();
-            //rootNode.AppendChild(dateNode);
-
-            //XmlNode nameNode = xmlDocument.CreateElement("NameNode");
-            //nameNode.InnerText = Console.Title;
-            //rootNode.AppendChild(nameNode);
-
-            //XmlNode messageNode = xmlDocument.CreateElement("MessageNode");
-            //messageNode.InnerText = ex.Message;
-            //rootNode.AppendChild(messageNode);
-
-            //XmlNode stackTraceNode = xmlDocument.CreateElement("stackTrace");
-            //stackTraceNode.InnerText = ex.StackTrace;
-            //rootNode.AppendChild(stackTraceNode);
-
-            //XmlNode systemStateNode = xmlDocument.CreateElement("systemStateNode");
-            //systemStateNode.InnerText = ex.SystemState;
-            //rootNode.AppendChild(systemStateNode);
-
-            //xmlDocument.Save(path);
             if(!File.Exists(path))
             {
                 XDocument dox = new XDocument();
 
                 XElement start = new XElement("MyExceptions");
                 
-
                 XElement exception = new XElement("MyException");
-                exception.Add(new XElement("date", DateTime.Now.ToString()));
+                exception.Add(new XElement("date", date.ToString()));
                 exception.Add(new XElement("name", Console.Title));
+                exception.Add(new XElement("message", ex.Message));
+                exception.Add(new XElement("stacktrace", ex.StackTrace));
+                exception.Add(new XElement("systemState", ex.SystemState));
 
                 start.Add(exception);
 
                 dox.Add(start);
-
-                //dox.Element("MyExceptions").Add(exception);
-
 
                 dox.Save(path);
             }
             else
             {
                 XDocument dox = XDocument.Load(path);
-                XElement root = new XElement("MyException");
-                root.Add(new XElement("date", DateTime.Now.ToString()));
-                root.Add(new XElement("name", Console.Title));
-                dox.Element("MyExceptions").Add(root);
+
+                XElement exception = new XElement("MyException");
+                exception.Add(new XElement("date", date.ToString()));
+                exception.Add(new XElement("name", Console.Title));
+                exception.Add(new XElement("message", ex.Message));
+                exception.Add(new XElement("stacktrace", ex.StackTrace));
+                exception.Add(new XElement("systemState", ex.SystemState));
+
+                dox.Element("MyExceptions").Add(exception);
+
                 dox.Save(path);
 
 
@@ -151,7 +233,7 @@ namespace LabLec2
             SaveLogXML(this);
         }
         public NumberException(string message, string a)
-       : base(message) { SystemState = a; SaveLogTxt(this); SaveLogXML(this); }
+       : base(message) { SystemState = "Некорректное число:"+a; SaveLogTxt(this); SaveLogXML(this); SaveLogJSON(this); }
 
     }
     internal class DiscMinException : MyException
@@ -162,7 +244,8 @@ namespace LabLec2
         {
             foreach (var a in coef)
                 SystemState += "Коэффициент:" +a.ToString();
-                
+
+            SaveLogTxt(this); SaveLogXML(this);
         }
 
         public double[] Coef { get => coef; set => coef = value; }
@@ -177,6 +260,7 @@ namespace LabLec2
         {
             foreach (var a in coef)
                 SystemState += "Коэффициент:" + a.ToString();
+            SaveLogTxt(this); SaveLogXML(this);
         }
 
         public double[] Coef { get => coef; set => coef = value; }
