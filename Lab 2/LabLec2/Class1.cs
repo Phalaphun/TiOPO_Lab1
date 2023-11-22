@@ -53,7 +53,7 @@ namespace LabLec2
 
 
                 JObject exceptionJson = new JObject(
-                    new JProperty("date", ex.Date.ToString()),
+                    new JProperty("date", ex.Date.ToString() +" GTM: "+ TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()),
                     new JProperty("name", ex.Source),
                     new JProperty("message", ex.Message),
                     new JProperty("stacktrace", ex.StackTrace),
@@ -118,7 +118,8 @@ namespace LabLec2
 
                 //sw.Close();
 
-                sw.WriteLine($"{ex.Date.ToString()}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}..|Значение системных параметров:..|{systemState}");
+                sw.WriteLine($"{ex.Date.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()}" +
+                    $"..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}..|Значение системных параметров:..|{systemState}");
                 
                 //sw.WriteLine("Ошибка");
                 //sw.WriteLine(Console.Title);
@@ -146,7 +147,7 @@ namespace LabLec2
                 XElement start = new XElement("MyExceptions");
                 
                 XElement exception = new XElement("MyException");
-                exception.Add(new XElement("date", date.ToString()));
+                exception.Add(new XElement("date", date.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()));
                 exception.Add(new XElement("name", Console.Title));
                 exception.Add(new XElement("message", ex.Message));
                 exception.Add(new XElement("stacktrace", ex.StackTrace));

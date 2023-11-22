@@ -34,7 +34,7 @@ namespace LabLec1
             //string path = Console.ReadLine() ?? throw new FileNotFoundException("Указан некорректный путь");
             string? path = Console.ReadLine();
 #elif test
-            string path = "prim1.txt";
+            string path = "prim.txt";
 #endif
 
             try
@@ -163,7 +163,7 @@ namespace LabLec1
                 using (StreamWriter sw = new StreamWriter(path+".txt", true))
                 {
 
-                    sw.WriteLine($"{DateTime.UtcNow}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
+                    sw.WriteLine($"{DateTime.UtcNow + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
                     sw.Close();
                 }
             }
@@ -176,7 +176,7 @@ namespace LabLec1
                     XElement start = new XElement("MyExceptions");
 
                     XElement exception = new XElement("FileNotFoundException");
-                    exception.Add(new XElement("date", DateTime.UtcNow.ToString()));
+                    exception.Add(new XElement("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()));
                     exception.Add(new XElement("name", Console.Title));
                     exception.Add(new XElement("message", ex.Message));
                     exception.Add(new XElement("stacktrace", ex.StackTrace));
@@ -229,7 +229,7 @@ namespace LabLec1
 
 
                     JObject exceptionJson = new JObject(
-                        new JProperty("date", DateTime.UtcNow.ToString()),
+                        new JProperty("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()),
                         new JProperty("name", ex.Source),
                         new JProperty("message", ex.Message),
                         new JProperty("stacktrace", ex.StackTrace)
