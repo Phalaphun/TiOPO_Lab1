@@ -13,6 +13,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using System.Xml.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LabLec1
 {
@@ -163,7 +164,7 @@ namespace LabLec1
                 using (StreamWriter sw = new StreamWriter(path+".txt", true))
                 {
 
-                    sw.WriteLine($"{DateTime.UtcNow + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
+                    sw.WriteLine($"{DateTime.UtcNow + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
                     sw.Close();
                 }
             }
@@ -176,7 +177,7 @@ namespace LabLec1
                     XElement start = new XElement("MyExceptions");
 
                     XElement exception = new XElement("FileNotFoundException");
-                    exception.Add(new XElement("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()));
+                    exception.Add(new XElement("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")));
                     exception.Add(new XElement("name", Console.Title));
                     exception.Add(new XElement("message", ex.Message));
                     exception.Add(new XElement("stacktrace", ex.StackTrace));
@@ -197,7 +198,7 @@ namespace LabLec1
                     XDocument dox = XDocument.Load(path + ".xml");
 
                     XElement exception = new XElement("FileNotFoundException");
-                    exception.Add(new XElement("date", DateTime.UtcNow.ToString()));
+                    exception.Add(new XElement("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")));
                     exception.Add(new XElement("name", Console.Title));
                     exception.Add(new XElement("message", ex.Message));
                     exception.Add(new XElement("stacktrace", ex.StackTrace));
@@ -229,7 +230,7 @@ namespace LabLec1
 
 
                     JObject exceptionJson = new JObject(
-                        new JProperty("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).ToString()),
+                        new JProperty("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")),
                         new JProperty("name", ex.Source),
                         new JProperty("message", ex.Message),
                         new JProperty("stacktrace", ex.StackTrace)
@@ -250,7 +251,7 @@ namespace LabLec1
                     JArray array = new JArray();
 
                     JObject exceptionJson = new JObject(
-                        new JProperty("date", DateTime.UtcNow.ToString()),
+                        new JProperty("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")),
                         new JProperty("name", ex.Source),
                         new JProperty("message", ex.Message),
                         new JProperty("stacktrace", ex.StackTrace)
