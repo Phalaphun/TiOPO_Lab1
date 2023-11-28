@@ -164,7 +164,10 @@ namespace LabLec1
                 using (StreamWriter sw = new StreamWriter(path+".txt", true))
                 {
 
-                    sw.WriteLine($"{DateTime.UtcNow + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")}..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}");
+                    sw.WriteLine($"{DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")}" +
+                    $"..|ERROR in: ..|{AppDomain.CurrentDomain.FriendlyName}..|Message..|{ex.Message}..|StackTrace..|{ex.StackTrace}..|OSVersion..|{Environment.OSVersion.ToString()}..|WorkingSet..|{Environment.WorkingSet}..|PROCESSOR_ARCHITECTURE..|{Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")}" +
+                    $"..|PROCESSOR_IDENTIFIER.||{Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")}.||Число ядер..|{Environment.ProcessorCount}");
+
                     sw.Close();
                 }
             }
@@ -178,9 +181,13 @@ namespace LabLec1
 
                     XElement exception = new XElement("FileNotFoundException");
                     exception.Add(new XElement("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")));
-                    exception.Add(new XElement("name", Console.Title));
+                    exception.Add(new XElement("name", AppDomain.CurrentDomain.FriendlyName));
                     exception.Add(new XElement("message", ex.Message));
-                    exception.Add(new XElement("stacktrace", ex.StackTrace));
+                    exception.Add(new XElement("OSVersion", Environment.OSVersion.ToString()));
+                    exception.Add(new XElement("WorkingSet", Environment.WorkingSet));
+                    exception.Add(new XElement("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")));
+                    exception.Add(new XElement("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")));
+                    exception.Add(new XElement("ProcessorCount", Environment.ProcessorCount));
 
 
                     start.Add(exception);
@@ -199,9 +206,13 @@ namespace LabLec1
 
                     XElement exception = new XElement("FileNotFoundException");
                     exception.Add(new XElement("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")));
-                    exception.Add(new XElement("name", Console.Title));
+                    exception.Add(new XElement("name", AppDomain.CurrentDomain.FriendlyName));
                     exception.Add(new XElement("message", ex.Message));
-                    exception.Add(new XElement("stacktrace", ex.StackTrace));
+                    exception.Add(new XElement("OSVersion", Environment.OSVersion.ToString()));
+                    exception.Add(new XElement("WorkingSet", Environment.WorkingSet));
+                    exception.Add(new XElement("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")));
+                    exception.Add(new XElement("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")));
+                    exception.Add(new XElement("ProcessorCount", Environment.ProcessorCount));
 
                     //ex.Source
 
@@ -231,9 +242,14 @@ namespace LabLec1
 
                     JObject exceptionJson = new JObject(
                         new JProperty("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")),
-                        new JProperty("name", ex.Source),
+                        new JProperty("name", AppDomain.CurrentDomain.FriendlyName),
                         new JProperty("message", ex.Message),
-                        new JProperty("stacktrace", ex.StackTrace)
+                        new JProperty("stacktrace", ex.StackTrace),
+                        new JProperty("OSVersion", Environment.OSVersion.ToString()),
+                        new JProperty("WorkingSet", Environment.WorkingSet),
+                        new JProperty("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")),
+                        new JProperty("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")),
+                        new JProperty("ProcessorCount", Environment.ProcessorCount)
 
 
                         );
@@ -252,9 +268,14 @@ namespace LabLec1
 
                     JObject exceptionJson = new JObject(
                         new JProperty("date", DateTime.UtcNow.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")),
-                        new JProperty("name", ex.Source),
+                        new JProperty("name", AppDomain.CurrentDomain.FriendlyName),
                         new JProperty("message", ex.Message),
-                        new JProperty("stacktrace", ex.StackTrace)
+                        new JProperty("stacktrace", ex.StackTrace),
+                        new JProperty("OSVersion", Environment.OSVersion.ToString()),
+                        new JProperty("WorkingSet", Environment.WorkingSet),
+                        new JProperty("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")),
+                        new JProperty("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")),
+                        new JProperty("ProcessorCount", Environment.ProcessorCount)
 
 
                         );

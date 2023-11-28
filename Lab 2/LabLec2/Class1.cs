@@ -9,6 +9,8 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections;
 
 namespace LabLec2
 
@@ -54,10 +56,15 @@ namespace LabLec2
 
                 JObject exceptionJson = new JObject(
                     new JProperty("date", ex.Date.ToString() +" GTM: "+ TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")),
-                    new JProperty("name", ex.Source),
+                    new JProperty("name", AppDomain.CurrentDomain.FriendlyName),
                     new JProperty("message", ex.Message),
                     new JProperty("stacktrace", ex.StackTrace),
-                    new JProperty("systemState", ex.SystemState)
+                    new JProperty("systemState", ex.SystemState),
+                    new JProperty("OSVersion", Environment.OSVersion.ToString()),
+                    new JProperty("WorkingSet", Environment.WorkingSet),
+                    new JProperty("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")),
+                    new JProperty("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")),
+                    new JProperty("ProcessorCount", Environment.ProcessorCount)
 
 
                     );
@@ -76,10 +83,16 @@ namespace LabLec2
 
                 JObject exceptionJson = new JObject( 
                     new JProperty("date", date.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")),
-                    new JProperty("name", ex.Source),
+                    new JProperty("name", AppDomain.CurrentDomain.FriendlyName),
                     new JProperty("message", ex.Message),
                     new JProperty("stacktrace", ex.StackTrace),
-                    new JProperty("systemState", ex.SystemState)
+                    new JProperty("systemState", ex.SystemState),
+                    new JProperty("OSVersion", Environment.OSVersion.ToString()),
+                    new JProperty("WorkingSet", Environment.WorkingSet),
+                    new JProperty("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")),
+                    new JProperty("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")),
+                    new JProperty("ProcessorCount", Environment.ProcessorCount)
+
 
 
                     );
@@ -119,7 +132,8 @@ namespace LabLec2
                 //sw.Close();
 
                 sw.WriteLine($"{ex.Date.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")}" +
-                    $"..|ERROR in: ..|{Console.Title}..|{ex.Message}..|{ex.StackTrace}..|Значение системных параметров:..|{systemState}");
+                    $"..|ERROR in: ..|{AppDomain.CurrentDomain.FriendlyName}..|Message..|{ex.Message}..|StackTrace..|{ex.StackTrace}..|OSVersion..|{Environment.OSVersion.ToString()}..|WorkingSet..|{Environment.WorkingSet}..|Значение системных параметров:..|{systemState}..|PROCESSOR_ARCHITECTURE..|{Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")}" +
+                    $"..|PROCESSOR_IDENTIFIER.||{Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")}.||Число ядер..|{Environment.ProcessorCount}");
                 
                 //sw.WriteLine("Ошибка");
                 //sw.WriteLine(Console.Title);
@@ -148,10 +162,15 @@ namespace LabLec2
                 
                 XElement exception = new XElement("MyException");
                 exception.Add(new XElement("date", date.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")));
-                exception.Add(new XElement("name", Console.Title));
+                exception.Add(new XElement("name", AppDomain.CurrentDomain.FriendlyName));
                 exception.Add(new XElement("message", ex.Message));
                 exception.Add(new XElement("stacktrace", ex.StackTrace));
                 exception.Add(new XElement("systemState", ex.SystemState));
+                exception.Add(new XElement("OSVersion", Environment.OSVersion.ToString()));
+                exception.Add(new XElement("WorkingSet", Environment.WorkingSet));
+                exception.Add(new XElement("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")));
+                exception.Add(new XElement("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")));
+                exception.Add(new XElement("ProcessorCount", Environment.ProcessorCount));
 
                 start.Add(exception);
 
@@ -170,10 +189,16 @@ namespace LabLec2
 
                 XElement exception = new XElement("MyException");
                 exception.Add(new XElement("date", date.ToString() + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")));
-                exception.Add(new XElement("name", Console.Title));
+                exception.Add(new XElement("name", AppDomain.CurrentDomain.FriendlyName));
                 exception.Add(new XElement("message", ex.Message));
                 exception.Add(new XElement("stacktrace", ex.StackTrace));
                 exception.Add(new XElement("systemState", ex.SystemState));
+                exception.Add(new XElement("OSVersion", Environment.OSVersion.ToString()));
+                exception.Add(new XElement("WorkingSet", Environment.WorkingSet));
+                exception.Add(new XElement("PROCESSOR_ARCHITECTURE", Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")));
+                exception.Add(new XElement("PROCESSOR_IDENTIFIER", Environment.GetEnvironmentVariable("PROCESSOR_IDENTIFIER")));
+                exception.Add(new XElement("ProcessorCount", Environment.ProcessorCount));
+
 
                 dox.Element("MyExceptions").Add(exception);
 
