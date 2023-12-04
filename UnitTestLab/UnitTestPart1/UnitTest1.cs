@@ -145,6 +145,14 @@ namespace UnitTestPart1
             CollectionAssert.Contains(users,testableUser);
         }
 
+        [ClassCleanup]
+        public static void Clean()
+        {
+            users = null;
+            rnd = null;
+            GC.Collect();
+        }
+
         public static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
