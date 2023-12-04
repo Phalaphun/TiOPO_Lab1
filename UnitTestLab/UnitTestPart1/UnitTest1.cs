@@ -71,7 +71,7 @@ namespace UnitTestPart1
             
             double db = 0;
             Debug.WriteLine($"В выражении da/db локальная db = {db}");
-            double rez = da / db;
+            double rez = calc.Division(da,db);
 
             if (double.IsInfinity(rez))
             {
