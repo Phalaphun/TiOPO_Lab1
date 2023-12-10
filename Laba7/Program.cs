@@ -25,7 +25,10 @@ namespace Laba7
             {
                 Console.Write("--> ");
                 notParsedCommandLine = Console.ReadLine();
+                //notParsedCommandLine = "hui \"hui hui\" \\\"";
+                //notParsedCommandLine = "hui hui hui hui";
                 commands = ParseCommandLine(notParsedCommandLine);
+                
             }
             
 
@@ -37,23 +40,44 @@ namespace Laba7
             List<string> commands = new List<string>();
             string buffer = string.Empty;
             bool kavicha = false;
+            
             for (int i = 0;i<notParsedCommandLine.Length;i++)
             {
-                if(notParsedCommandLine[i] == '\"')
+                try
+                {
+                    if (notParsedCommandLine[i] == '\\')
+                    {
+                        //buffer += notParsedCommandLine[i].ToString() + notParsedCommandLine[++i];
+                        buffer +=  notParsedCommandLine[++i];
+                        continue;
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine("Ошибка в синтаксисе команды.");
+                    return new string[] { }; 
+                }
+                if(notParsedCommandLine[i] == '"')
                     kavicha = !kavicha;
 
-                if (notParsedCommandLine[i] != ' ' && !kavicha)
+                if (notParsedCommandLine[i] != ' ' && !kavicha && notParsedCommandLine[i] != '"')
                     buffer += notParsedCommandLine[i];
-                else if(kavicha)
+                else if(kavicha && notParsedCommandLine[i] != '"')
                 {
                     buffer += notParsedCommandLine[i];
                 }
-                else
+                else if(notParsedCommandLine[i] == ' ' && !kavicha)
                 {
                     commands.Add(buffer);
                     buffer = string.Empty;
                 }
 
+
+            }
+            if (buffer != string.Empty)
+            {
+                commands.Add(buffer);
+                buffer = String.Empty;
             }
 
 
