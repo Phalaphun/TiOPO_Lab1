@@ -254,6 +254,13 @@ namespace Laba7
 
             for(int i = 0; i < data.Length; i += 2)
             {
+                //TODO сделать проверку что следующий элемент не ключ, а значение, иначе error true и выкидывать из цикла
+                if (data[i + 1][0] !='-')
+                {
+                    error = true;
+                    Console.WriteLine($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");
+                    MyLogger.WriteLog($"Пользователь {Environment.UserName} ввел некорректный запрос: Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ", "ERROR");
+                }
                 switch (data[i])
                 {
                     case "-n": //name
