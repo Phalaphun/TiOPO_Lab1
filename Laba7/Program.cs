@@ -28,15 +28,102 @@ namespace Laba7
                 //notParsedCommandLine = "hui \"hui hui\" \\\"";
                 //notParsedCommandLine = "hui hui hui hui";
                 commands = ParseCommandLine(notParsedCommandLine);
-                
+                switch (commands[0])
+                {
+                    case "help":
+                        ListCommands();
+                        break;
+                    case "exit":
+                        return;
+                    case "deluser":
+                        if (!int.TryParse(commands[1], out int delId)) 
+                        {
+                            Console.WriteLine("Введён некорректный id");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался удалить запись с ID = {commands[1]}, однако это не блоы распознано как число", "ERROR");
+                            break;
+                        }
+                        userBD.RemoveUser(delId);
+                        break;
+                    case "adduser":
+                        if (commands[1] == "-m")
+                        {
+                            if (commands.Length <6)
+                            {
+                                Console.WriteLine("Введены не все параметры");
+                                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, однако не указал всех требуемых параметров", "ERROR");
+                            }
+                            userBD.AddUser(commands[2], commands[3], commands[4], commands[4], commands[5]);
+                        }
+                        else
+                        {
+                            userBD.AddUserWizard();
+                        }
+                        break;
+                    case "changeuser":
+                        if (!int.TryParse(commands[1], out int changeId))
+                        {
+                            Console.WriteLine("Введён некорректный id");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись с ID = {commands[1]}, однако это не блоы распознано как число", "ERROR");
+                            return;
+                        }
+
+                        if (commands[1].Length > 2)
+                        {
+                            
+
+                            List<string> updateParams = new List<string>(); 
+                            for (int i = 2; i < commands.Length; i++)
+                            {
+                                updateParams.Add(commands[i]);
+                            }
+
+                            userBD.ChangeUser(changeId,updateParams.ToArray());
+                        }
+                        else
+                        {
+                            Console.WriteLine("Выберите что желаете изменить:");
+                            Console.WriteLine("1)");
+                            Console.WriteLine("2)");
+                            Console.WriteLine("3)");
+                            Console.WriteLine("4)");
+                            Console.WriteLine("5)");
+                            Console.WriteLine("6)");
+
+                        }
+                        break;
+                    case "list":
+                        userBD.ListUsers();
+                        break;
+                    
+                }
+
             }
             
 
             Console.ReadKey();
         }
 
+        private static void ListCommands()
+        {
+            Console.WriteLine("Для просмотра пользователей введите list");
+            Console.WriteLine("Для добавления пользователя с помощью помощника введите adduser");
+            Console.WriteLine("Для добавления пользователя вручную введите \"adduser -m ФАМИЛИЯ ИМЯ ОТЧЕСТВО EMAIL ТЕЛЕФОН\"");
+            Console.WriteLine("Для изменения пользователя с помощью помощника введите \"changeuser ID\", где ID - ID пользователя, которого хотите изменить");
+            Console.WriteLine("Для изменения пользователя вручную введите \"changeuser ID -n ИМЯ -s ФАМИЛИЯ -p ФАМИЛИЯ -b true||false (заблокирован или нет) -e EMAIL -t ТЕЛЕФОН\"," +
+                "где ID - ID пользователя, которого хотите изменить. Не обязательно указывать все ключи");
+            Console.WriteLine("Для удаления пользователя введите \"deluser ID\", где ID - ID пользователя, которого хотите удалить");
+            Console.WriteLine("Введите exit, чтобы выйти из программы");
+            Console.WriteLine("Введите help для просмотра этой справки");
+            Console.WriteLine("");
+        }
+
         private static string[] ParseCommandLine(string? notParsedCommandLine)
         {
+            if(notParsedCommandLine == null || notParsedCommandLine=="")
+            {
+                throw new ArgumentNullException("Входящая строка была null или пустой");
+            }
+
             List<string> commands = new List<string>();
             string buffer = string.Empty;
             bool kavicha = false;
