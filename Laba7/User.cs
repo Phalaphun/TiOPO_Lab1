@@ -46,6 +46,26 @@ namespace Laba7
             counter++;
         }
 
+        public User(User OldUser, bool cloneID)
+        {
+            this.surname = OldUser.Surname;
+            this.name = OldUser.Name;
+            this.patronymic = OldUser.Patronymic;
+            this.email = OldUser.Email;
+            this.telnum = OldUser.Telnum;
+
+            this.isBlocked = OldUser.IsBlocked;
+            if(cloneID )
+            {
+                id = OldUser.Id;
+            }
+            else
+            {
+                id = counter;
+                counter++;
+            }
+        }
+
         public string Telnum { get => telnum; set => telnum = value; }
         public bool IsBlocked { get => isBlocked; set => isBlocked = value; }
         public int Id { get => id; }
