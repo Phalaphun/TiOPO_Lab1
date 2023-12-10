@@ -10,13 +10,55 @@ namespace Laba7
             //Console.WriteLine("123");
 
             UserBD userBD = new UserBD();
-
             userBD.GenerateTestUSers(5);
-            userBD.ListUsers();
-            userBD.AddUser();
-            userBD.ListUsers();
+
+            //userBD.ListUsers();
+            //userBD.ChangeUserWizard(1, UpdateType.UpdateName);
+            //userBD.ChangeUser(1, new string[] { "-n", "Hui", "-s", "kek" });
+            //userBD.AddUserWizard();
+            //userBD.ListUsers();
+            Console.WriteLine("CLI для убправления контактными данными. Введите команду");
+
+            string[] commands;
+            string notParsedCommandLine = string.Empty;
+            while (true)
+            {
+                Console.Write("--> ");
+                notParsedCommandLine = Console.ReadLine();
+                commands = ParseCommandLine(notParsedCommandLine);
+            }
+            
 
             Console.ReadKey();
+        }
+
+        private static string[] ParseCommandLine(string? notParsedCommandLine)
+        {
+            List<string> commands = new List<string>();
+            string buffer = string.Empty;
+            bool kavicha = false;
+            for (int i = 0;i<notParsedCommandLine.Length;i++)
+            {
+                if(notParsedCommandLine[i] == '\"')
+                    kavicha = !kavicha;
+
+                if (notParsedCommandLine[i] != ' ' && !kavicha)
+                    buffer += notParsedCommandLine[i];
+                else if(kavicha)
+                {
+                    buffer += notParsedCommandLine[i];
+                }
+                else
+                {
+                    commands.Add(buffer);
+                    buffer = string.Empty;
+                }
+
+            }
+
+
+
+            return commands.ToArray();
         }
     }
     /*
