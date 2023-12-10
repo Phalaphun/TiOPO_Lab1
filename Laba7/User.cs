@@ -57,7 +57,7 @@ namespace Laba7
 
         public override string ToString()
         {
-            return $"Пользователь с id {id}: {surname} {name} {patronymic}, статус блокировки:{isBlocked}, e-mail:{email}, телефон: {telnum}.";
+            return $"Пользователь с id {id}: {surname} {name} {patronymic}, статус блокировки:{isBlocked}, телефон: {telnum}, e-mail:{email}.";
         }
         public bool IsValidEMail(string emailaddress)
         {
