@@ -6,17 +6,9 @@ namespace Laba7
     {
         static void Main(string[] args)
         {
-            //MyLogger.WriteLog("HHHH","INFO");
-            //Console.WriteLine("123");
-
             UserBD userBD = new UserBD();
             userBD.GenerateTestUSers(5);
 
-            //userBD.ListUsers();
-            //userBD.ChangeUserWizard(1, UpdateType.UpdateName);
-            //userBD.ChangeUser(1, new string[] { "-n", "Hui", "-s", "kek" });
-            //userBD.AddUserWizard();
-            //userBD.ListUsers();
             Console.WriteLine("CLI для убправления контактными данными. Введите команду");
 
             string[] commands;
@@ -25,8 +17,7 @@ namespace Laba7
             {
                 Console.Write("--> ");
                 notParsedCommandLine = Console.ReadLine().Trim();
-                //notParsedCommandLine = "hui \"hui hui\" \\\"";
-                //notParsedCommandLine = "hui hui hui hui";
+
                 commands = ParseCommandLine(notParsedCommandLine);
                 switch (commands[0])
                 {
@@ -69,7 +60,6 @@ namespace Laba7
 
                         if (commands.Length > 2)
                         {
-                            
 
                             List<string> updateParams = new List<string>(); 
                             for (int i = 2; i < commands.Length; i++)
@@ -81,53 +71,7 @@ namespace Laba7
                         }
                         else
                         {
-                            Console.WriteLine("Укажите что желаете изменить. Чтобы вернуться введите 7");
-                            Console.WriteLine("1) Изменить фамилию");
-                            Console.WriteLine("2) Изменить имя");
-                            Console.WriteLine("3) Изменить отчество");
-                            Console.WriteLine("4) Сменить статус на противоположный");
-                            Console.WriteLine("5) Изменить E-mail");
-                            Console.WriteLine("6) Изменить телефон");
-                            Console.WriteLine("7) Назад");
-                            bool passed = false;
-                            while (!passed)
-                            {
-                                string ans = Console.ReadLine();
-                                
-                                switch(ans)
-                                {
-                                    case "1":
-                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateSurname);
-                                        passed = !passed;
-                                        break;
-                                    case "2":
-                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateName);
-                                        passed = !passed;
-                                        break;
-                                    case "3":
-                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdatePatronymic);
-                                        passed = !passed;
-                                        break;
-                                    case "4":
-                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateisBlocked);
-                                        passed = !passed;
-                                        break;
-                                    case "5":
-                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateEmail);
-                                        passed = !passed;
-                                        break;
-                                    case "6":
-                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateTelephone);
-                                        passed = !passed;
-                                        break;
-                                    case "7":
-                                        passed = !passed;
-                                        break;
-
-                                }
-                                
-                                
-                            }
+                            PreChangeWizardMethod(userBD, changeId);
 
                         }
                         break;
@@ -139,9 +83,58 @@ namespace Laba7
                 }
 
             }
-            
 
-            Console.ReadKey();
+        }
+
+        private static void PreChangeWizardMethod(UserBD userBD, int changeId)
+        {
+            Console.WriteLine("Укажите что желаете изменить. Чтобы вернуться введите 7");
+            Console.WriteLine("1) Изменить фамилию");
+            Console.WriteLine("2) Изменить имя");
+            Console.WriteLine("3) Изменить отчество");
+            Console.WriteLine("4) Сменить статус на противоположный");
+            Console.WriteLine("5) Изменить E-mail");
+            Console.WriteLine("6) Изменить телефон");
+            Console.WriteLine("7) Назад");
+            bool passed = false;
+            while (!passed)
+            {
+                string ans = Console.ReadLine();
+
+                switch (ans)
+                {
+                    case "1":
+                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateSurname);
+                        passed = !passed;
+                        break;
+                    case "2":
+                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateName);
+                        passed = !passed;
+                        break;
+                    case "3":
+                        userBD.ChangeUserWizard(changeId, UpdateType.UpdatePatronymic);
+                        passed = !passed;
+                        break;
+                    case "4":
+                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateisBlocked);
+                        passed = !passed;
+                        break;
+                    case "5":
+                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateEmail);
+                        passed = !passed;
+                        break;
+                    case "6":
+                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateTelephone);
+                        passed = !passed;
+                        break;
+                    case "7":
+                        passed = !passed;
+                        break;
+
+                }
+
+
+            }
         }
 
         private static void ListCommands()
@@ -183,7 +176,7 @@ namespace Laba7
                 catch (IndexOutOfRangeException ex)
                 {
                     Console.WriteLine("Ошибка в синтаксисе команды.");
-                    return new string[] { }; 
+                    return Array.Empty<string>(); 
                 }
                 if(notParsedCommandLine[i] == '"')
                     kavicha = !kavicha;

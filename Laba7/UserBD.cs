@@ -81,8 +81,7 @@ namespace Laba7
 
         public void AddUser(string surname, string name, string patronymic, string email, string telnum)
         {
-            string answer = "n";
-            bool isCorrcet = false;
+
 
             User tempUser = new User(surname, name, patronymic, false, email, telnum);
 
