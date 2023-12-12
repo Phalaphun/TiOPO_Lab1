@@ -158,7 +158,7 @@ namespace Laba7
                         if (answer == "n") continue;
 
                         if (CheckOnlyOnePartOfFIO(newSurname)) break;
-                        Console.WriteLine("Указано неверная фамилия. Она должна начинаться заглавной буквы");
+                        Console.WriteLine("Указаа неверная фамилия. Она должна начинаться заглавной буквы");
                         MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                             $"Указана некорретная фамилия", "ERROR");
                     }
@@ -255,11 +255,20 @@ namespace Laba7
             for(int i = 0; i < data.Length; i += 2)
             {
                 //TODO сделать проверку что следующий элемент не ключ, а значение, иначе error true и выкидывать из цикла
-                if (data[i + 1][0] !='-')
+                try
                 {
-                    error = true;
-                    Console.WriteLine($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");
-                    MyLogger.WriteLog($"Пользователь {Environment.UserName} ввел некорректный запрос: Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ", "ERROR");
+                    if (data[i + 1][0] == '-')
+                    {
+                        error = true;
+                        Console.WriteLine($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");
+                        MyLogger.WriteLog($"Пользователь {Environment.UserName} ввел некорректный запрос: Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ", "ERROR");
+                        return;
+                    }
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine($"Была введена некорректная последновательность ключей. Возможно за ключем не было значения");
+                    MyLogger.WriteLog($"Пользователь {Environment.UserName} ввел некорректный запрос: Была введена некорректная последновательность ключей. Возможно за ключем не было значения", "ERROR");
                 }
                 switch (data[i])
                 {

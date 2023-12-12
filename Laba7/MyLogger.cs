@@ -24,7 +24,7 @@ namespace Laba7
                     string text = $"Time|{DateTime.UtcNow + " GTM: " + TimeZoneInfo.Local.GetUtcOffset(DateTime.Now).Hours.ToString("+#;-#;0")}|Type|{type.ToUpper()}|" +
                         $"Message|{message}|Stacktrace|{new StackTrace(1,true)}|OSversion|{Environment.OSVersion}|Program|{Assembly.GetExecutingAssembly().GetName().Name}|" +
                         $"Version|{Assembly.GetExecutingAssembly().GetName().Version}|" +
-                        $"additionalInfo|{additionalInfo}"+"ENDLINE..ENDLINE";
+                        $"additionalInfo|{additionalInfo}|"+"ENDLINE..ENDLINE";
                     sw.WriteLine(text);
                     sw.Close();
                 }

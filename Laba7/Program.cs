@@ -24,7 +24,7 @@ namespace Laba7
             while (true)
             {
                 Console.Write("--> ");
-                notParsedCommandLine = Console.ReadLine();
+                notParsedCommandLine = Console.ReadLine().Trim();
                 //notParsedCommandLine = "hui \"hui hui\" \\\"";
                 //notParsedCommandLine = "hui hui hui hui";
                 commands = ParseCommandLine(notParsedCommandLine);
@@ -45,14 +45,14 @@ namespace Laba7
                         userBD.RemoveUser(delId);
                         break;
                     case "adduser":
-                        if (commands[1] == "-m")
+                        if (commands.Length>1 && commands[1] == "-m")
                         {
                             if (commands.Length <6)
                             {
                                 Console.WriteLine("Введены не все параметры");
                                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, однако не указал всех требуемых параметров", "ERROR");
                             }
-                            userBD.AddUser(commands[2], commands[3], commands[4], commands[4], commands[5]);
+                            userBD.AddUser(commands[2], commands[3], commands[4], commands[5], commands[6]);
                         }
                         else
                         {
@@ -64,10 +64,10 @@ namespace Laba7
                         {
                             Console.WriteLine("Введён некорректный id");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись с ID = {commands[1]}, однако это не блоы распознано как число", "ERROR");
-                            return;
+                            break;
                         }
 
-                        if (commands[1].Length > 2)
+                        if (commands.Length > 2)
                         {
                             
 
@@ -81,19 +81,60 @@ namespace Laba7
                         }
                         else
                         {
-                            Console.WriteLine("Выберите что желаете изменить:");
-                            Console.WriteLine("1)");
-                            Console.WriteLine("2)");
-                            Console.WriteLine("3)");
-                            Console.WriteLine("4)");
-                            Console.WriteLine("5)");
-                            Console.WriteLine("6)");
+                            Console.WriteLine("Укажите что желаете изменить. Чтобы вернуться введите 7");
+                            Console.WriteLine("1) Изменить фамилию");
+                            Console.WriteLine("2) Изменить имя");
+                            Console.WriteLine("3) Изменить отчество");
+                            Console.WriteLine("4) Сменить статус на противоположный");
+                            Console.WriteLine("5) Изменить E-mail");
+                            Console.WriteLine("6) Изменить телефон");
+                            Console.WriteLine("7) Назад");
+                            bool passed = false;
+                            while (!passed)
+                            {
+                                string ans = Console.ReadLine();
+                                
+                                switch(ans)
+                                {
+                                    case "1":
+                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateSurname);
+                                        passed = !passed;
+                                        break;
+                                    case "2":
+                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateName);
+                                        passed = !passed;
+                                        break;
+                                    case "3":
+                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdatePatronymic);
+                                        passed = !passed;
+                                        break;
+                                    case "4":
+                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateisBlocked);
+                                        passed = !passed;
+                                        break;
+                                    case "5":
+                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateEmail);
+                                        passed = !passed;
+                                        break;
+                                    case "6":
+                                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateTelephone);
+                                        passed = !passed;
+                                        break;
+                                    case "7":
+                                        passed = !passed;
+                                        break;
+
+                                }
+                                
+                                
+                            }
 
                         }
                         break;
                     case "list":
                         userBD.ListUsers();
                         break;
+                    default: Console.WriteLine("Команда не распознана"); break;
                     
                 }
 
