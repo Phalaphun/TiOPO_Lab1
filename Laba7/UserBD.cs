@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -18,8 +19,10 @@ namespace Laba7
         UpdateTelephone,
         UpdateEmail
     }
+    [DataContract]
     internal class UserBD
     {
+        [DataMember(Name = "users")]
         private List<User> users = new List<User>();
 
 

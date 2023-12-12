@@ -5,19 +5,30 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Laba7
 {
+    [DataContract]
     internal class User
     {
+        [DataMember(Name = "Id")]
         private int id;
-        private static int counter = 0;  
+        [DataMember(Name = "counter")]
+        private static int counter = 0;
 
+        [DataMember(Name = "Surname")]
         private string surname;
+        [DataMember(Name = "Name")]
         private string name;
+        [DataMember(Name = "Patronymic")]
         private string patronymic;
+        [DataMember(Name = "IsBlocked")]
         private bool isBlocked;
+        [DataMember(Name = "Email")]
         private string email;
+        [DataMember(Name = "Telnum")]
         private string telnum;
 
         public User(string surname, string name, string patronymic, bool isBlocked, string email, string telnum)

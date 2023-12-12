@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.Serialization;
+using System.Xml;
 
 namespace Laba7
 {
@@ -7,12 +10,29 @@ namespace Laba7
         static void Main(string[] args)
         {
             UserBD userBD = new UserBD();
-            userBD.GenerateTestUSers(5);
+            //userBD.GenerateTestUSers(5);
 
             Console.WriteLine("CLI для убправления контактными данными. Введите команду");
 
             string[] commands;
             string notParsedCommandLine = string.Empty;
+
+            //var ser = new DataContractSerializer(typeof(UserBD));
+            //TextWriter tw = new StreamWriter("test.xml");
+            //using (XmlWriter xw = XmlWriter.Create(tw))
+            //{
+            //    ser.WriteObject(xw, userBD);
+            //}
+
+            //var ser = new DataContractSerializer(typeof(UserBD));
+            //TextReader tw = new StreamReader("test.xml");
+            //using (XmlReader xw = XmlReader.Create(tw))
+            //{
+            //    //ser.WriteObject(xw, userBD);
+            //    userBD = (UserBD)ser.ReadObject(xw);
+            //}
+
+
             while (true)
             {
                 Console.Write("--> ");
@@ -27,7 +47,7 @@ namespace Laba7
                     case "exit":
                         return;
                     case "deluser":
-                        if (!int.TryParse(commands[1], out int delId)) 
+                        if (!int.TryParse(commands[1], out int delId))
                         {
                             Console.WriteLine("Введён некорректный id");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался удалить запись с ID = {commands[1]}, однако это не блоы распознано как число", "ERROR");
@@ -36,9 +56,9 @@ namespace Laba7
                         userBD.RemoveUser(delId);
                         break;
                     case "adduser":
-                        if (commands.Length>1 && commands[1] == "-m")
+                        if (commands.Length > 1 && commands[1] == "-m")
                         {
-                            if (commands.Length <6)
+                            if (commands.Length < 6)
                             {
                                 Console.WriteLine("Введены не все параметры");
                                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, однако не указал всех требуемых параметров", "ERROR");
@@ -61,13 +81,13 @@ namespace Laba7
                         if (commands.Length > 2)
                         {
 
-                            List<string> updateParams = new List<string>(); 
+                            List<string> updateParams = new List<string>();
                             for (int i = 2; i < commands.Length; i++)
                             {
                                 updateParams.Add(commands[i]);
                             }
 
-                            userBD.ChangeUser(changeId,updateParams.ToArray());
+                            userBD.ChangeUser(changeId, updateParams.ToArray());
                         }
                         else
                         {
@@ -78,8 +98,25 @@ namespace Laba7
                     case "list":
                         userBD.ListUsers();
                         break;
+                    case "save":
+                        Save(userBD);
+                            break;
+                    case "load":
+                        userBD = Load(userBD);
+                        break;
+#if DEBUG
+                    case "gentestdata":
+                        if(commands.Length <= 1 || !int.TryParse(commands[1], out int numOfTestUsers))
+                        {
+                            Console.WriteLine("Указано некорректное число тестовых записей");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить тестовые записи, однако указал некорректное число записей", "ERROR");
+                            break;
+                        }
+                        userBD.GenerateTestUSers(numOfTestUsers);
+                        break;
+#endif
                     default: Console.WriteLine("Команда не распознана"); break;
-                    
+
                 }
 
             }
@@ -148,7 +185,86 @@ namespace Laba7
             Console.WriteLine("Для удаления пользователя введите \"deluser ID\", где ID - ID пользователя, которого хотите удалить");
             Console.WriteLine("Введите exit, чтобы выйти из программы");
             Console.WriteLine("Введите help для просмотра этой справки");
+            Console.WriteLine("Введите save сохранения базы данных в файл");
+            Console.WriteLine("Введите load загрузки базы данных из файла");
             Console.WriteLine("");
+        }
+
+        private static void Save(UserBD userBD)
+        {
+            var ser = new DataContractSerializer(typeof(UserBD));
+            TextWriter tw = null;
+            try
+            {
+                tw = new StreamWriter("savedBD.xml");
+                using (XmlWriter xw = XmlWriter.Create(tw))
+                {
+                    ser.WriteObject(xw, userBD);
+                }
+                tw.Close();
+                tw = null;
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу.", "ERROR");
+            }
+            catch (SerializationException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
+            }
+            catch (InvalidDataContractException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
+            }
+            finally
+            {
+                if (tw != null)
+                {
+                    tw.Close();
+                }
+            }
+        }
+
+        private static UserBD Load(UserBD userBD)
+        {
+            var ser = new DataContractSerializer(typeof(UserBD));
+            TextReader tw = null;
+            try
+            {
+                tw = new StreamReader("savedBD.xml");
+                using (XmlReader xw = XmlReader.Create(tw))
+                {
+                    userBD = (UserBD)ser.ReadObject(xw);
+                }
+                tw.Close();
+                tw = null;
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу. Возможно файла нет, или он занят.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу. Возможно файла нет, или он занят.", "ERROR");
+            }
+            catch (SerializationException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
+            }
+            catch (InvalidDataContractException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
+            }
+            finally
+            {
+                if (tw != null)
+                {
+                    tw.Close();
+                }
+            }
+            return userBD;
         }
 
         private static string[] ParseCommandLine(string? notParsedCommandLine)
