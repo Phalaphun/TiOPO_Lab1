@@ -47,14 +47,26 @@ namespace Laba7
                     case "exit":
                         return;
                     case "deluser":
+
                         if (!int.TryParse(commands[1], out int delId))
                         {
                             Console.WriteLine("Введён некорректный id");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался удалить запись с ID = {commands[1]}, однако это не блоы распознано как число", "ERROR");
                             break;
                         }
-                        userBD.RemoveUser(delId);
+
+
+                        try
+                        {
+                            userBD.RemoveUser(delId);
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                         break;
+
+
                     case "adduser":
                         if (commands.Length > 1 && commands[1] == "-m")
                         {
@@ -63,7 +75,14 @@ namespace Laba7
                                 Console.WriteLine("Введены не все параметры");
                                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, однако не указал всех требуемых параметров", "ERROR");
                             }
-                            userBD.AddUser(commands[2], commands[3], commands[4], commands[5], commands[6]);
+                            try
+                            {
+                                userBD.AddUser(commands[2], commands[3], commands[4], commands[5], commands[6]);
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
                         }
                         else
                         {
@@ -87,7 +106,14 @@ namespace Laba7
                                 updateParams.Add(commands[i]);
                             }
 
-                            userBD.ChangeUser(changeId, updateParams.ToArray());
+                            try
+                            {
+                                userBD.ChangeUser(changeId, updateParams.ToArray());
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
                         }
                         else
                         {
@@ -138,36 +164,43 @@ namespace Laba7
             {
                 string ans = Console.ReadLine();
 
-                switch (ans)
+                try
                 {
-                    case "1":
-                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateSurname);
-                        passed = !passed;
-                        break;
-                    case "2":
-                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateName);
-                        passed = !passed;
-                        break;
-                    case "3":
-                        userBD.ChangeUserWizard(changeId, UpdateType.UpdatePatronymic);
-                        passed = !passed;
-                        break;
-                    case "4":
-                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateisBlocked);
-                        passed = !passed;
-                        break;
-                    case "5":
-                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateEmail);
-                        passed = !passed;
-                        break;
-                    case "6":
-                        userBD.ChangeUserWizard(changeId, UpdateType.UpdateTelephone);
-                        passed = !passed;
-                        break;
-                    case "7":
-                        passed = !passed;
-                        break;
+                    switch (ans)
+                    {
+                        case "1":
+                            userBD.ChangeUserWizard(changeId, UpdateType.UpdateSurname);
+                            passed = !passed;
+                            break;
+                        case "2":
+                            userBD.ChangeUserWizard(changeId, UpdateType.UpdateName);
+                            passed = !passed;
+                            break;
+                        case "3":
+                            userBD.ChangeUserWizard(changeId, UpdateType.UpdatePatronymic);
+                            passed = !passed;
+                            break;
+                        case "4":
+                            userBD.ChangeUserWizard(changeId, UpdateType.UpdateisBlocked);
+                            passed = !passed;
+                            break;
+                        case "5":
+                            userBD.ChangeUserWizard(changeId, UpdateType.UpdateEmail);
+                            passed = !passed;
+                            break;
+                        case "6":
+                            userBD.ChangeUserWizard(changeId, UpdateType.UpdateTelephone);
+                            passed = !passed;
+                            break;
+                        case "7":
+                            passed = !passed;
+                            break;
 
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
 
 
@@ -187,6 +220,7 @@ namespace Laba7
             Console.WriteLine("Введите help для просмотра этой справки");
             Console.WriteLine("Введите save сохранения базы данных в файл");
             Console.WriteLine("Введите load загрузки базы данных из файла");
+            Console.WriteLine("Введите gentestdata N для создания тестовых записей, где N - число записей");
             Console.WriteLine("");
         }
 

@@ -92,22 +92,19 @@ namespace Laba7
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                     $"Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.", "ERROR");
-                Console.WriteLine("Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.");
-                return;
+                throw new ArgumentException("Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.");
             }
             if (!CheckTelephoneNumber(tempUser))
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                     $"Указан некорректный номер телефона", "ERROR");
-                Console.WriteLine("Указан некорректный номер телефона");
-                return; 
+                throw new ArgumentException("Указан некорректный номер телефона");
             }
             if (!CheckEmail(tempUser))
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                     $"Указан некорректный адрес e-mail", "ERROR");
-                Console.WriteLine("Указан некорректный адрес e-mail");
-                return;
+                throw new ArgumentException("Указан некорректный адрес e-mail");
             }
 
 
@@ -121,8 +118,7 @@ namespace Laba7
             if(changeUser == null)
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить несуществующую запись с id {id}", "ERROR");
-                Console.WriteLine("Пользователь с данным id не найден");
-                return;
+                throw new ArgumentException("Пользователь с данным id не найден");
             }
 
             switch (updateType)
@@ -247,11 +243,9 @@ namespace Laba7
             if (changeUser == null)
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить несуществующую запись с id {id}", "ERROR");
-                Console.WriteLine("Пользователь с данным id не найден");
-                return;
+                throw new ArgumentException("Пользователь с данным id не найден");
             }
 
-            bool error = false;
             User oldUser = new User(changeUser, true);
 
             for(int i = 0; i < data.Length; i += 2)
@@ -260,11 +254,11 @@ namespace Laba7
                 try
                 {
                     if (data[i + 1][0] == '-')
-                    {
-                        error = true;
-                        Console.WriteLine($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");
+                    {                      
                         MyLogger.WriteLog($"Пользователь {Environment.UserName} ввел некорректный запрос: Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ", "ERROR");
-                        return;
+                        //Console.WriteLine($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");
+                        RollBack(changeUser, oldUser);
+                        throw new ArgumentException($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");;
                     }
                 }
                 catch (IndexOutOfRangeException ex)
@@ -277,33 +271,32 @@ namespace Laba7
                     case "-n": //name
                         if(!CheckOnlyOnePartOfFIO(data[i + 1]))
                         {
-                            Console.WriteLine("Указано неверное имя. Оно должно начинаться заглавной буквы");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указано некорретное имя", "ERROR");
-                            error = true;
-                            break;
+                            RollBack(changeUser, oldUser);
+                            throw new ArgumentException("Указано неверное имя. Оно должно начинаться заглавной буквы");
+                           
                         }
                         changeUser.Name = data[i+1];
                         break;
                     case "-s": //surname
                         if (!CheckOnlyOnePartOfFIO(data[i + 1]))
                         {
-                            Console.WriteLine("Указана неверная фамилия. Она должна начинаться заглавной буквы");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указана некорретная фамилия", "ERROR");
-                            error = true;
-                            break;
+
+                            RollBack(changeUser, oldUser);
+                            throw new ArgumentException("Указана неверная фамилия. Она должна начинаться заглавной буквы");
                         }
                         changeUser.Surname = data[i + 1];
                         break;
                     case "-p": //patr
                         if (!CheckOnlyOnePartOfFIO(data[i + 1]))
                         {
-                            Console.WriteLine("Указано неверное отчество. Оно должна начинаться заглавной буквы");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указано некорретное отчество", "ERROR");
-                            error = true;
-                            break;
+                            RollBack(changeUser, oldUser);
+                            throw new ArgumentException("Указано неверное отчество. Оно должна начинаться заглавной буквы");
                         }
                         changeUser.Patronymic = data[i + 1];
                         break;
@@ -312,9 +305,8 @@ namespace Laba7
                         {
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указан неверный тип блокировки", "ERROR");
-                            Console.WriteLine("Указан неверный тип блокировки");
-                            error = true;
-                            break;
+                            RollBack(changeUser, oldUser);
+                            throw new ArgumentException("Указан неверный тип блокировки");
                         }
                         MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Статус блокировки изменён с \"{changeUser.IsBlocked}\" на \"{!changeUser.IsBlocked}\" ", "INFO");
                         changeUser.IsBlocked = result;
@@ -322,11 +314,10 @@ namespace Laba7
                     case "-e": //email
                         if (!CheckEmail(data[i + 1]))
                         {
-                            Console.WriteLine("Указан некорректный Email.");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указан некорректный Email", "ERROR");
-                            error = true;
-                            break;
+                            RollBack(changeUser, oldUser);
+                            throw new ArgumentException("Указан некорректный Email.");
                         }
                         changeUser.Email = data[i + 1];
                         break;
@@ -336,8 +327,8 @@ namespace Laba7
                             Console.WriteLine("Указан некорректный телефон.");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указан некорректный телефон", "ERROR");
-                            error = true;
-                            break;
+                            RollBack(changeUser, oldUser);
+                            throw new ArgumentException("Указан некорректный телефон."); ;
                         }
                         changeUser.Telnum = data[i + 1];
                         break;
@@ -346,13 +337,14 @@ namespace Laba7
 
                     
                 }
-                if (error)
-                {
-                    users.Remove(changeUser);
-                    users.Add(oldUser);
-                    return;
-                }
 
+            }
+
+            void RollBack(User? changeUser, User oldUser)
+            {
+                users.Remove(changeUser);
+                users.Add(oldUser);
+                return;
             }
 
             //switch (updateType)
@@ -482,7 +474,8 @@ namespace Laba7
             else
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался удалить несуществующую запись с id {id}", "ERROR");
-                Console.WriteLine("Пользователь с данным id не найден");
+                throw new ArgumentException("Пользователь с данным id не найден");
+                
             }
         }
 
