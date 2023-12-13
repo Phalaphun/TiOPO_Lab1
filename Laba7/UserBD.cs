@@ -42,11 +42,12 @@ namespace Laba7
                 Console.WriteLine("Enter patronymic");
                 string patronymic = Console.ReadLine().Trim();
 
-                Console.WriteLine("Enter telephone number");
-                string telnum = Console.ReadLine().Trim();
-
                 Console.WriteLine("Enter email");
                 string email = Console.ReadLine().Trim();
+
+                Console.WriteLine("Enter telephone number");
+                string telnum = Console.ReadLine().Trim();
+               
 
                 tempUser = new User(surname, name, patronymic, false, email, telnum);
 
@@ -59,21 +60,21 @@ namespace Laba7
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                         $"Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.", "ERROR");
                     Console.WriteLine("Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.");
-                    return;
+                    continue;
                 }
                 if (!CheckTelephoneNumber(tempUser))
                 {
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                         $"Указан некорректный номер телефона", "ERROR");
                     Console.WriteLine("Указан некорректный номер телефона");
-                    return;
+                    continue;
                 }
                 if (!CheckEmail(tempUser))
                 {
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                         $"Указан некорректный адрес e-mail", "ERROR");
                     Console.WriteLine("Указан некорректный адрес e-mail");
-                    return;
+                    continue;
                 }
                 break;
             }
