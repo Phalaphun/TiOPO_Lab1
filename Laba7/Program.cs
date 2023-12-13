@@ -12,7 +12,7 @@ namespace Laba7
             UserBD userBD = new UserBD();
             //userBD.GenerateTestUSers(5);
 
-            Console.WriteLine("CLI для убправления контактными данными. Введите команду");
+            Console.WriteLine("CLI для управления контактными данными. Введите команду");
 
             string[] commands;
             string notParsedCommandLine = string.Empty;
@@ -75,10 +75,10 @@ namespace Laba7
                         userBD.ListUsers();
                         break;
                     case "save":
-                        Save(userBD);
+                        userBD.Save();
                         break;
                     case "load":
-                        userBD = Load(userBD);
+                        userBD.Load();
                         break;
                     #if DEBUG
                     case "gentestdata":
@@ -248,82 +248,82 @@ namespace Laba7
             Console.WriteLine("");
         }
 
-        private static void Save(UserBD userBD)
-        {
-            var ser = new DataContractSerializer(typeof(UserBD));
-            TextWriter tw = null;
-            try
-            {
-                tw = new StreamWriter("savedBD.xml");
-                using (XmlWriter xw = XmlWriter.Create(tw))
-                {
-                    ser.WriteObject(xw, userBD);
-                }
-                tw.Close();
-                tw = null;
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу.");
-                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу.", "ERROR");
-            }
-            catch (SerializationException ex)
-            {
-                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
-                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
-            }
-            catch (InvalidDataContractException ex)
-            {
-                Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
-                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
-            }
-            finally
-            {
-                if (tw != null)
-                {
-                    tw.Close();
-                }
-            }
-        }
+        //private static void Save(UserBD userBD)
+        //{
+        //    var ser = new DataContractSerializer(typeof(UserBD));
+        //    TextWriter tw = null;
+        //    try
+        //    {
+        //        tw = new StreamWriter("savedBD.xml");
+        //        using (XmlWriter xw = XmlWriter.Create(tw))
+        //        {
+        //            ser.WriteObject(xw, userBD);
+        //        }
+        //        tw.Close();
+        //        tw = null;
+        //    }
+        //    catch (IOException ex)
+        //    {
+        //        Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу.");
+        //        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу.", "ERROR");
+        //    }
+        //    catch (SerializationException ex)
+        //    {
+        //        Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
+        //        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
+        //    }
+        //    catch (InvalidDataContractException ex)
+        //    {
+        //        Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
+        //        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
+        //    }
+        //    finally
+        //    {
+        //        if (tw != null)
+        //        {
+        //            tw.Close();
+        //        }
+        //    }
+        //}
 
-        private static UserBD Load(UserBD userBD)
-        {
-            var ser = new DataContractSerializer(typeof(UserBD));
-            TextReader tw = null;
-            try
-            {
-                tw = new StreamReader("savedBD.xml");
-                using (XmlReader xw = XmlReader.Create(tw))
-                {
-                    userBD = (UserBD)ser.ReadObject(xw);
-                }
-                tw.Close();
-                tw = null;
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу. Возможно файла нет, или он занят.");
-                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу. Возможно файла нет, или он занят.", "ERROR");
-            }
-            catch (SerializationException ex)
-            {
-                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
-                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
-            }
-            catch (InvalidDataContractException ex)
-            {
-                Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
-                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
-            }
-            finally
-            {
-                if (tw != null)
-                {
-                    tw.Close();
-                }
-            }
-            return userBD;
-        }
+        //private static UserBD Load(UserBD userBD)
+        //{
+        //    var ser = new DataContractSerializer(typeof(UserBD));
+        //    TextReader tw = null;
+        //    try
+        //    {
+        //        tw = new StreamReader("savedBD.xml");
+        //        using (XmlReader xw = XmlReader.Create(tw))
+        //        {
+        //            userBD = (UserBD)ser.ReadObject(xw);
+        //        }
+        //        tw.Close();
+        //        tw = null;
+        //    }
+        //    catch (IOException ex)
+        //    {
+        //        Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу. Возможно файла нет, или он занят.");
+        //        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу. Возможно файла нет, или он занят.", "ERROR");
+        //    }
+        //    catch (SerializationException ex)
+        //    {
+        //        Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
+        //        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
+        //    }
+        //    catch (InvalidDataContractException ex)
+        //    {
+        //        Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
+        //        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
+        //    }
+        //    finally
+        //    {
+        //        if (tw != null)
+        //        {
+        //            tw.Close();
+        //        }
+        //    }
+        //    return userBD;
+        //}
 
         private static string[] ParseCommandLine(string? notParsedCommandLine)
         {

@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Laba7
 {
@@ -30,7 +31,8 @@ namespace Laba7
         {
             string answer = String.Empty;
             User tempUser;
-            do {
+            do
+            {
                 Console.WriteLine("Enter Surname");
                 string surname = Console.ReadLine().Trim();
 
@@ -50,12 +52,12 @@ namespace Laba7
 
                 Console.Write("YourUser: "); Console.WriteLine(tempUser.ToString());
                 Console.WriteLine("Is all correct? [y/n]");
-                answer=Console.ReadLine().Trim();
+                answer = Console.ReadLine().Trim();
                 if (answer == "n") continue;
                 if (!CheckFIO(tempUser))
                 {
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
-                        $"Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.","ERROR");
+                        $"Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.", "ERROR");
                     Console.WriteLine("Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.");
                     return;
                 }
@@ -115,7 +117,7 @@ namespace Laba7
         public void ChangeUserWizard(int id, UpdateType updateType)
         {
             User? changeUser = users.Find((item) => item.Id == id);
-            if(changeUser == null)
+            if (changeUser == null)
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить несуществующую запись с id {id}", "ERROR");
                 throw new ArgumentException("Пользователь с данным id не найден");
@@ -139,7 +141,7 @@ namespace Laba7
                         MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                             $"Указано некорретное имя", "ERROR");
                     }
-                    
+
 
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Имя изменено с \"{changeUser.Name}\" на \"{newName}\" ", "INFO");
                     changeUser.Name = newName;
@@ -239,7 +241,7 @@ namespace Laba7
         public void ChangeUser(int id, string[] data)
         {
             User? changeUser = users.Find((item) => item.Id == id);
-            
+
             if (changeUser == null)
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить несуществующую запись с id {id}", "ERROR");
@@ -248,17 +250,17 @@ namespace Laba7
 
             User oldUser = new User(changeUser, true);
 
-            for(int i = 0; i < data.Length; i += 2)
+            for (int i = 0; i < data.Length; i += 2)
             {
                 //TODO сделать проверку что следующий элемент не ключ, а значение, иначе error true и выкидывать из цикла
                 try
                 {
                     if (data[i + 1][0] == '-')
-                    {                      
+                    {
                         MyLogger.WriteLog($"Пользователь {Environment.UserName} ввел некорректный запрос: Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ", "ERROR");
                         //Console.WriteLine($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");
                         RollBack(changeUser, oldUser);
-                        throw new ArgumentException($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ");;
+                        throw new ArgumentException($"Ключ {data[i]} не имел значения, т.е. за ключом сразу шел ключ"); ;
                     }
                 }
                 catch (IndexOutOfRangeException ex)
@@ -269,15 +271,15 @@ namespace Laba7
                 switch (data[i])
                 {
                     case "-n": //name
-                        if(!CheckOnlyOnePartOfFIO(data[i + 1]))
+                        if (!CheckOnlyOnePartOfFIO(data[i + 1]))
                         {
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указано некорретное имя", "ERROR");
                             RollBack(changeUser, oldUser);
                             throw new ArgumentException("Указано неверное имя. Оно должно начинаться заглавной буквы");
-                           
+
                         }
-                        changeUser.Name = data[i+1];
+                        changeUser.Name = data[i + 1];
                         break;
                     case "-s": //surname
                         if (!CheckOnlyOnePartOfFIO(data[i + 1]))
@@ -301,7 +303,7 @@ namespace Laba7
                         changeUser.Patronymic = data[i + 1];
                         break;
                     case "-b": //blocking
-                        if (!bool.TryParse(data[i+1], out bool result))
+                        if (!bool.TryParse(data[i + 1], out bool result))
                         {
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
                                 $"Указан неверный тип блокировки", "ERROR");
@@ -335,7 +337,7 @@ namespace Laba7
                     default:
                         break;
 
-                    
+
                 }
 
             }
@@ -469,13 +471,13 @@ namespace Laba7
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} удалил запись: {delUser.ToString()}", "INFO");
                 users.Remove(delUser);
-               
+
             }
             else
             {
                 MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался удалить несуществующую запись с id {id}", "ERROR");
                 throw new ArgumentException("Пользователь с данным id не найден");
-                
+
             }
         }
 
@@ -483,7 +485,7 @@ namespace Laba7
         {
             for (int i = 0; i < users.Count; i++)
             {
-                Console.WriteLine((i+1)+")" + users[i]);
+                Console.WriteLine((i + 1) + ")" + users[i]);
             }
         }
 
@@ -571,12 +573,90 @@ namespace Laba7
 
         public static string RandomString(int length)
         {
-            Random rnd = new Random();  
+            Random rnd = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[rnd.Next(s.Length)]).ToArray());
         }
 
+        public void Save()//Возвращать bool как признак успешности сохранения? Или лучше убрать тут try и оставить это на пользователя либы? 
+        {
+            var ser = new DataContractSerializer(typeof(List<User>));
+            TextWriter tw = null;
+            try
+            {
+                tw = new StreamWriter("savedBD1.xml");
+                using (XmlWriter xw = XmlWriter.Create(tw))
+                {
+                    ser.WriteObject(xw, users);
+                }
+                tw.Close();
+                tw = null;
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу.", "ERROR");
+                
+            }
+            catch (SerializationException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
+            }
+            catch (InvalidDataContractException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
+            }
+            finally
+            {
+                if (tw != null)
+                {
+                    tw.Close();
+                }
+            }
 
+        }
+        
+        public void Load()
+        {
+            var ser = new DataContractSerializer(typeof(List<User>));
+            TextReader tw = null;
+            try
+            {
+                tw = new StreamReader("savedBD1.xml");
+                using (XmlReader xw = XmlReader.Create(tw))
+                {
+                    users = (List<User>)ser.ReadObject(xw);
+                }
+                tw.Close();
+                tw = null;
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось получить поток к файлу. Возможно файла нет, или он занят.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла получить поток на запись к файлу. Возможно файла нет, или он занят.", "ERROR");
+            }
+            catch (SerializationException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Не удалось сохранить файл.");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако программа не смогла сохранить файл.", "ERROR");
+            }
+            catch (InvalidDataContractException ex)
+            {
+                Console.WriteLine("Произошла ошибка при попытке сохранения. Пришел некорректный файл для сохранения");
+                MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался сохранить базу данных, однако Пришел некорректный файл для сериализации.", "ERROR");
+            }
+            finally
+            {
+                if (tw != null)
+                {
+                    tw.Close();
+                }
+            }
+
+        }
     }
+
 }
