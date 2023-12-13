@@ -32,25 +32,25 @@ namespace Laba7
             User tempUser;
             do {
                 Console.WriteLine("Enter Surname");
-                string surname = Console.ReadLine();
+                string surname = Console.ReadLine().Trim();
 
                 Console.WriteLine("Enter Name");
-                string name = Console.ReadLine();
+                string name = Console.ReadLine().Trim();
 
                 Console.WriteLine("Enter patronymic");
-                string patronymic = Console.ReadLine();
+                string patronymic = Console.ReadLine().Trim();
 
                 Console.WriteLine("Enter telephone number");
-                string telnum = Console.ReadLine();
+                string telnum = Console.ReadLine().Trim();
 
                 Console.WriteLine("Enter email");
-                string email = Console.ReadLine();
+                string email = Console.ReadLine().Trim();
 
                 tempUser = new User(surname, name, patronymic, false, email, telnum);
 
                 Console.Write("YourUser: "); Console.WriteLine(tempUser.ToString());
                 Console.WriteLine("Is all correct? [y/n]");
-                answer=Console.ReadLine();
+                answer=Console.ReadLine().Trim();
                 if (answer == "n") continue;
                 if (!CheckFIO(tempUser))
                 {
@@ -128,10 +128,10 @@ namespace Laba7
                     while (true)
                     {
                         Console.WriteLine("Введите новое имя:");
-                        newName = Console.ReadLine();
+                        newName = Console.ReadLine().Trim();
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
-                        string answer = Console.ReadLine();
+                        string answer = Console.ReadLine().Trim();
                         if (answer == "n") continue;
 
                         if (CheckOnlyOnePartOfFIO(newName)) break;
@@ -149,10 +149,10 @@ namespace Laba7
                     while (true)
                     {
                         Console.WriteLine("Введите новую фамилию:");
-                        newSurname = Console.ReadLine();
+                        newSurname = Console.ReadLine().Trim();
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
-                        string answer = Console.ReadLine();
+                        string answer = Console.ReadLine().Trim();
                         if (answer == "n") continue;
 
                         if (CheckOnlyOnePartOfFIO(newSurname)) break;
@@ -170,10 +170,10 @@ namespace Laba7
                     while (true)
                     {
                         Console.WriteLine("Введите новое отчество:");
-                        newPatronymic = Console.ReadLine();
+                        newPatronymic = Console.ReadLine().Trim();
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
-                        string answer = Console.ReadLine();
+                        string answer = Console.ReadLine().Trim();
                         if (answer == "n") continue;
 
                         if (CheckOnlyOnePartOfFIO(newPatronymic)) break;
@@ -195,10 +195,10 @@ namespace Laba7
                     while (true)
                     {
                         Console.WriteLine("Введите новый Email:");
-                        email = Console.ReadLine();
+                        email = Console.ReadLine().Trim();
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
-                        string answer = Console.ReadLine();
+                        string answer = Console.ReadLine().Trim();
                         if (answer == "n") continue;
 
                         if (CheckEmail(email)) break;
@@ -216,10 +216,10 @@ namespace Laba7
                     while (true)
                     {
                         Console.WriteLine("Введите новый телефон:");
-                        telnum = Console.ReadLine();
+                        telnum = Console.ReadLine().Trim();
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
-                        string answer = Console.ReadLine();
+                        string answer = Console.ReadLine().Trim();
                         if (answer == "n") continue;
 
                         if (CheckTelephoneNumber(telnum)) break;
