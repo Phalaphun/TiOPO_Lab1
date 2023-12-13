@@ -500,36 +500,38 @@ namespace Laba7
 
         public static bool CheckFIO(User testUser)
         {
-            if (!char.IsUpper(testUser.Surname[0]))
-            {
-                return false;
-            }
-            if (!char.IsUpper(testUser.Name[0]))
-            {
-                return false;
-            }
-            if (!char.IsUpper(testUser.Patronymic[0]))
-            {
-                return false;
-            }
+            //if (!char.IsUpper(testUser.Surname[0]))
+            //{
+            //    return false;
+            //}
+            //if (!char.IsUpper(testUser.Name[0]))
+            //{
+            //    return false;
+            //}
+            //if (!char.IsUpper(testUser.Patronymic[0]))
+            //{
+            //    return false;
+            //}
 
 
 
-            return true;
+            //return true;
+            return CheckOnlyOnePartOfFIO(testUser.Name) && CheckOnlyOnePartOfFIO(testUser.Surname) && CheckOnlyOnePartOfFIO(testUser.Patronymic);
         }
 
         public static bool CheckEmail(User testUser)
         {
-            try
-            {
-                MailAddress m = new MailAddress(testUser.Email);
+            //try
+            //{
+            //    MailAddress m = new MailAddress(testUser.Email);
 
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            //    return true;
+            //}
+            //catch (FormatException)
+            //{
+            //    return false;
+            //}
+            return CheckEmail(testUser.Email);
         }
 
         public static bool CheckEmail(string email)
@@ -555,7 +557,7 @@ namespace Laba7
         public static bool CheckTelephoneNumber(User testUser)
         {
             //return Regex.Match(testUser.Telnum, @"^(\+[0-9]{11})$").Success;
-            return Regex.Match(testUser.Telnum, @"\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?").Success;
+            return CheckTelephoneNumber(testUser.Telnum);
         }
 
 
