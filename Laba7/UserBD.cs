@@ -1,18 +1,11 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Runtime.CompilerServices;
+﻿using System.Net.Mail;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
-namespace Laba7
+namespace Laba7Liba
 {
-    enum UpdateType
+    public enum UpdateType
     {
         UpdateName=1,
         UpdateSurname,
@@ -22,7 +15,7 @@ namespace Laba7
         UpdateEmail
     }
     [DataContract]
-    internal class UserBD
+    public class UserBD
     {
         [DataMember(Name = "users")]
         private List<User> users = new List<User>();

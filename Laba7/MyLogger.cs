@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 
-namespace Laba7
+namespace Laba7Liba
 {
 
 

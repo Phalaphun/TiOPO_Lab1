@@ -1,9 +1,6 @@
-﻿using System.Diagnostics;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.Serialization;
-using System.Xml;
+﻿using Laba7Liba;
 
-namespace Laba7
+namespace Laba7Main
 {
     internal class Program
     {
@@ -47,7 +44,7 @@ namespace Laba7
                     case "exit":
                         return;
                     case "deluser":
-                        DelUser(userBD,commands);
+                        DelUser(userBD, commands);
                         //if (!int.TryParse(commands[1], out int delId))
                         //{
                         //    Console.WriteLine("Введён некорректный id");
@@ -69,7 +66,7 @@ namespace Laba7
                         AddUser(userBD, commands);
                         break;
                     case "changeuser":
-                        ChangeUser(userBD,commands);
+                        ChangeUser(userBD, commands);
                         break;
                     case "list":
                         userBD.ListUsers();
@@ -80,9 +77,9 @@ namespace Laba7
                     case "load":
                         userBD.Load();
                         break;
-                    #if DEBUG
+#if DEBUG
                     case "gentestdata":
-                        if(commands.Length <= 1 || !int.TryParse(commands[1], out int numOfTestUsers))
+                        if (commands.Length <= 1 || !int.TryParse(commands[1], out int numOfTestUsers))
                         {
                             Console.WriteLine("Указано некорректное число тестовых записей");
                             MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить тестовые записи, однако указал некорректное число записей", "ERROR");
@@ -90,7 +87,7 @@ namespace Laba7
                         }
                         userBD.GenerateTestUSers(numOfTestUsers);
                         break;
-                    #endif
+#endif
                     default: Console.WriteLine("Команда не распознана. Для прсомотра списка команд введите help"); break;
 
                 }
@@ -242,9 +239,9 @@ namespace Laba7
             Console.WriteLine("Введите \"help\" для просмотра этой справки");
             Console.WriteLine("Введите \"save\" сохранения базы данных в файл");
             Console.WriteLine("Введите \"load\" загрузки базы данных из файла");
-            #if DEBUG
+#if DEBUG
             Console.WriteLine("Введите \"gentestdata N\" для создания тестовых записей, где N - число записей");
-            #endif
+#endif
             Console.WriteLine("");
         }
 
@@ -327,7 +324,7 @@ namespace Laba7
 
         private static string[] ParseCommandLine(string? notParsedCommandLine)
         {
-            if(notParsedCommandLine == null || notParsedCommandLine=="")
+            if (notParsedCommandLine == null || notParsedCommandLine == "")
             {
                 throw new ArgumentNullException("Входящая строка была null или пустой");
             }
@@ -335,33 +332,33 @@ namespace Laba7
             List<string> commands = new List<string>();
             string buffer = string.Empty;
             bool kavicha = false;
-            
-            for (int i = 0;i<notParsedCommandLine.Length;i++)
+
+            for (int i = 0; i < notParsedCommandLine.Length; i++)
             {
                 try
                 {
                     if (notParsedCommandLine[i] == '\\')
                     {
                         //buffer += notParsedCommandLine[i].ToString() + notParsedCommandLine[++i];
-                        buffer +=  notParsedCommandLine[++i];
+                        buffer += notParsedCommandLine[++i];
                         continue;
                     }
                 }
                 catch (IndexOutOfRangeException ex)
                 {
                     Console.WriteLine("Ошибка в синтаксисе команды.");
-                    return Array.Empty<string>(); 
+                    return Array.Empty<string>();
                 }
-                if(notParsedCommandLine[i] == '"')
+                if (notParsedCommandLine[i] == '"')
                     kavicha = !kavicha;
 
                 if (notParsedCommandLine[i] != ' ' && !kavicha && notParsedCommandLine[i] != '"')
                     buffer += notParsedCommandLine[i];
-                else if(kavicha && notParsedCommandLine[i] != '"')
+                else if (kavicha && notParsedCommandLine[i] != '"')
                 {
                     buffer += notParsedCommandLine[i];
                 }
-                else if(notParsedCommandLine[i] == ' ' && !kavicha)
+                else if (notParsedCommandLine[i] == ' ' && !kavicha)
                 {
                     commands.Add(buffer);
                     buffer = string.Empty;
@@ -380,24 +377,5 @@ namespace Laba7
             return commands.ToArray();
         }
     }
-    /*
-        Пишем adress book: Вывод инфы из справичника: ФИО + номер телефона + статус;
-        USER: FIO TEL EMAIL BLOCKED ID ;
-
-        Смотреть все записи, уметь блокировать записи
-        Уметь разблокировать уметь удалять, добавлять изменять. Без GUI. 
-
-        Требования e-mail: проверка на то, что это e-mail. На телефоне тоже проверка. 
-
-        В момент CURD долно откладывать что и кто изменил (кто - учетка винды, дата время) + откидывания ошибок (мол некорректный mail). 
-
-        В EXCEL описать все тесты, с учетом замечаний. 
-
-        Тесты: 
-        Тестирование метода всех проверок (телефон или мыло). 
-        Метод проверки добавления
-        Метод проверки удаления (по ID) 
-        Метод проверки Изменения 
-        Тестим что все ФИО начинаются с заглавных букв 
-    */
 }
+

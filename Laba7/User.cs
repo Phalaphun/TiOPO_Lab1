@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Mail;
 using System.Runtime.Serialization;
-using System.Xml;
 
-namespace Laba7
+
+namespace Laba7Liba
 {
     [DataContract]
-    internal class User
+    public class User
     {
         [DataMember(Name = "Id")]
         private int id;
