@@ -1,0 +1,3 @@
+Вася Пупкин Иванович asdasd@asdasd.ru +79244024350 y true
+Вася gупкин Иванович asdasdasd@ll.com +79244024350 y false
+Вася gупкин Иванович asdasdasd@ll.com +79244024350 n false

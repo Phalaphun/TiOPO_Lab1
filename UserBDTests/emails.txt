@@ -1,0 +1,6 @@
+fdfddsfsd false
+dadadad false
+test@capybara.su true
+test@capybara true
+test@ false
+test_vapybara.su false

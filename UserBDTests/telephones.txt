@@ -1,0 +1,9 @@
++79244025395 true
+98465 false
+123321 false
+015236 false
+_ false
+asd false
+igi false
+000000 false
+(123)-(123)-(123) false

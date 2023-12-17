@@ -667,7 +667,7 @@ namespace Laba7Liba
 
         #region Методы, изменённые для работы с юнитТестами(т.е. обращения к консоли заменены на readline)
 
-        public void AddUserWizardUnitTest(string _surname, string _name, string _patronymic, string _email, string _telnum,
+        public bool AddUserWizardUnitTest(string _surname, string _name, string _patronymic, string _email, string _telnum,
             string _answer)
         {
             string answer = String.Empty;
@@ -695,27 +695,27 @@ namespace Laba7Liba
                 Console.Write("YourUser: "); Console.WriteLine(tempUser.ToString());
                 Console.WriteLine("Is all correct? [y/n]");
                 answer = _answer.Trim();
-                if (answer == "n") continue;
+                if (answer == "n") return false;
                 if (!CheckFIO(tempUser))
                 {
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                         $"Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.", "ERROR");
                     Console.WriteLine("Указаны некорректный данные ФИО. Они должны начинаться с заглавной буквы.");
-                    continue;
+                    return false;
                 }
                 if (!CheckTelephoneNumber(tempUser))
                 {
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                         $"Указан некорректный номер телефона", "ERROR");
                     Console.WriteLine("Указан некорректный номер телефона");
-                    continue;
+                    return false;
                 }
                 if (!CheckEmail(tempUser))
                 {
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался добавить запись, но случилась ошибка:" +
                         $"Указан некорректный адрес e-mail", "ERROR");
                     Console.WriteLine("Указан некорректный адрес e-mail");
-                    continue;
+                    return false;
                 }
                 break;
             }
@@ -724,9 +724,10 @@ namespace Laba7Liba
 
             MyLogger.WriteLog($"Пользователь {Environment.UserName} добавил запись: {tempUser.ToString()}", "INFO");
             users.Add(tempUser);
+            return true;
         }
 
-        public void ChangeUserWizardUnitTest(int id, UpdateType updateType, string _newData, string _answer)
+        public bool ChangeUserWizardUnitTest(int id, UpdateType updateType, string _newData, string _answer)
         {
             User? changeUser = users.Find((item) => item.Id == id);
             if (changeUser == null)
@@ -750,17 +751,23 @@ namespace Laba7Liba
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
                         string answer = _answer.Trim();
-                        if (answer == "n") continue;
+                        if (answer == "n") return false;
 
                         if (CheckOnlyOnePartOfFIO(newData)) break;
-                        Console.WriteLine("Указано неверное имя. Оно должно начинаться заглавной буквы");
-                        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
-                            $"Указано некорретное имя", "ERROR");
+                        else
+                        {
+                            Console.WriteLine("Указано неверное имя. Оно должно начинаться заглавной буквы");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
+                                $"Указано некорретное имя", "ERROR");
+                            return false;
+                        }
+                       
                     }
 
 
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Имя изменено с \"{changeUser.Name}\" на \"{newData}\" ", "INFO");
                     changeUser.Name = newData;
+                    return true;
                     break;
                 case UpdateType.UpdateSurname:
                    
@@ -771,17 +778,23 @@ namespace Laba7Liba
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
                         string answer = _answer.Trim();
-                        if (answer == "n") continue;
+                        if (answer == "n") return false; ;
 
                         if (CheckOnlyOnePartOfFIO(newData)) break;
-                        Console.WriteLine("Указаа неверная фамилия. Она должна начинаться заглавной буквы");
-                        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
-                            $"Указана некорретная фамилия", "ERROR");
+                        else
+                        {
+                            Console.WriteLine("Указаа неверная фамилия. Она должна начинаться заглавной буквы");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
+                                $"Указана некорретная фамилия", "ERROR");
+                            return false;
+                        }
+                       
                     }
 
 
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Фамилия изменена с \"{changeUser.Surname}\" на \"{newData}\" ", "INFO");
                     changeUser.Surname = newData;
+                    return true;
                     break;
                 case UpdateType.UpdatePatronymic:
                     
@@ -792,22 +805,28 @@ namespace Laba7Liba
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
                         string answer = _answer.Trim();
-                        if (answer == "n") continue;
+                        if (answer == "n") return false; ;
 
                         if (CheckOnlyOnePartOfFIO(newData)) break;
-                        Console.WriteLine("Указано неверное отчество. Оно должна начинаться заглавной буквы");
-                        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
-                            $"Указано некорретное отчество", "ERROR");
+                        else
+                        {
+                            Console.WriteLine("Указано неверное отчество. Оно должна начинаться заглавной буквы");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
+                                $"Указано некорретное отчество", "ERROR");
+                            return false;
+                        }
+                        
                     }
 
 
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Отчество изменено с \"{changeUser.Patronymic}\" на \"{newData}\" ", "INFO");
                     changeUser.Patronymic = newData;
+                    return true;
                     break;
                 case UpdateType.UpdateisBlocked:
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Статус блокировки изменён с \"{changeUser.IsBlocked}\" на \"{!changeUser.IsBlocked}\" ", "INFO");
                     changeUser.IsBlocked = !changeUser.IsBlocked;
-                    break;
+                    return true;
                 case UpdateType.UpdateEmail:
                     
                     while (true)
@@ -817,17 +836,23 @@ namespace Laba7Liba
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
                         string answer = _answer.Trim();
-                        if (answer == "n") continue;
+                        if (answer == "n") return false; ;
 
                         if (CheckEmail(newData)) break;
-                        Console.WriteLine("Указан некорректный Email.");
-                        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
-                            $"Указан некорректный Email", "ERROR");
+                        else
+                        {
+                            Console.WriteLine("Указан некорректный Email.");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
+                                $"Указан некорректный Email", "ERROR");
+                            return false;
+                        }
+                        
                     }
 
 
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Email изменен с \"{changeUser.Email}\" на \"{newData}\" ", "INFO");
                     changeUser.Email = newData;
+                    return true;
                     break;
                 case UpdateType.UpdateTelephone:
 
@@ -838,18 +863,26 @@ namespace Laba7Liba
 
                         Console.WriteLine("Подтвердите корректность введеных данных или попытайтесь ещё раз [y/n]");
                         string answer = _answer.Trim();
-                        if (answer == "n") continue;
+                        if (answer == "n") return false; ;
 
                         if (CheckTelephoneNumber(newData)) break;
-                        Console.WriteLine("Указан некорректный телефон.");
-                        MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
-                            $"Указан некорректный телефон", "ERROR");
+                        else
+                        {
+                            Console.WriteLine("Указан некорректный телефон.");
+                            MyLogger.WriteLog($"Пользователь {Environment.UserName} попытался изменить запись {changeUser.ToString()}, но случилась ошибка:" +
+                                $"Указан некорректный телефон", "ERROR");
+                            return false;
+                        }
+                        
                     }
 
 
                     MyLogger.WriteLog($"Пользователь {Environment.UserName} изменил запись: {changeUser.ToString()}. Телефон изменен с \"{changeUser.Telnum}\" на \"{newData}\" ", "INFO");
                     changeUser.Telnum = newData;
+                    return true;
                     break;
+                default:
+                    return false;
 
             }
         }

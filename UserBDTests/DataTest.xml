@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Params>
+	<TestEmail email="fdfddsfsd" result="false"/>
+	<TestEmail email="dadadad" result="false"/>
+	<TestEmail email="sssdsdsd" result="false"/>
+	<TestEmail email="test@capybara.su" result="true"/>
+	<TestEmail email="test@capybara" result="true"/>
+	<TestEmail email="test@" result="false"/>
+	<TestEmail email="test_vapybara.su" result="false"/>
+</Params>
+ 

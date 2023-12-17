@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Laba7Liba", "Laba7Liba.csproj", "{4904FDB5-AB40-4C0E-841E-F150479D561B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Laba7Main", "..\Laba7Main\Laba7Main.csproj", "{5B79860A-A944-4D42-8655-A22EBA952983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Laba7Main", "..\Laba7Main\Laba7Main.csproj", "{5B79860A-A944-4D42-8655-A22EBA952983}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserBDTests", "..\UserBDTests\UserBDTests.csproj", "{A235ED46-4026-4DBA-B623-0EE26C84D84E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5B79860A-A944-4D42-8655-A22EBA952983}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B79860A-A944-4D42-8655-A22EBA952983}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B79860A-A944-4D42-8655-A22EBA952983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A235ED46-4026-4DBA-B623-0EE26C84D84E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A235ED46-4026-4DBA-B623-0EE26C84D84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A235ED46-4026-4DBA-B623-0EE26C84D84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A235ED46-4026-4DBA-B623-0EE26C84D84E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

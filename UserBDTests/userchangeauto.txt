@@ -1,0 +1,6 @@
+1 1 Kirill y true
+1 1 kirill y false
+1 1 kirill n false
+1 4 asd n true
+1 6 asdas@mail.ru y true
+1 6 asdas@ y false
