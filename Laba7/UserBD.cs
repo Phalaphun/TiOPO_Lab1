@@ -636,6 +636,7 @@ namespace Laba7Liba
                 }
                 tw.Close();
                 tw = null;
+                User.counter = users.Count;
             }
             catch (IOException ex)
             {

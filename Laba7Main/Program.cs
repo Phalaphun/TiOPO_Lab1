@@ -34,6 +34,10 @@ namespace Laba7Main
             {
                 Console.Write("--> ");
                 notParsedCommandLine = Console.ReadLine().Trim();
+                if(notParsedCommandLine.Length == 0 || notParsedCommandLine == null )
+                {
+                    continue;
+                }
 
                 commands = ParseCommandLine(notParsedCommandLine);
                 switch (commands[0])

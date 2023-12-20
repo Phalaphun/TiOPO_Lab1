@@ -10,7 +10,7 @@ namespace Laba7Liba
         [DataMember(Name = "Id")]
         private int id;
         [DataMember(Name = "counter")]
-        private static int counter = 0;
+        public static int counter = 0;
 
         [DataMember(Name = "Surname")]
         private string surname;
